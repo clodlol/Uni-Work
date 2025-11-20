@@ -26,6 +26,12 @@ int main()
     int substrLen;
     cout << "Enter the word to remove length: ";
     cin >> substrLen;
+    if(substrLen > n)
+    {
+        cout << "Substring cannot be longer than main string!" << endl;
+        system("pause");
+        return -1;
+    }
 
     char substr[substrLen];
     cout << "Enter the substring: ";
@@ -120,4 +126,7 @@ int main()
     }
 
     cout << "Townsville intelligence report generated." << endl;
+
+    system("pause");
+    return 0;
 }

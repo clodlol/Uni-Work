@@ -77,4 +77,7 @@ int main()
 
     cout << "Palindrome check: " << (palindrome ? "Yes" : "No") << endl;
     cout << "Mission unlocked: Sugar spice & everything nice!" << endl;
+
+    system("pause");
+    return 0;
 }

@@ -37,7 +37,7 @@ int main()
     string powLevelStr = to_string(powLevel);
     cout << "Power level as string: " << powLevelStr << endl;
 
-    char powerLvlChar[powLevelStr.size() + 1];
+    char powerLvlChar[powLevelStr.size()];
     for (int i = 0; i < powLevelStr.size(); i++)
         powerLvlChar[i] = powLevelStr[i];
     cout << "Power level as char array: ";
@@ -52,4 +52,7 @@ int main()
     cout << "Final Message: " << endl
          << "Blossom, Bubbles and Buttercup's total power = " << a << endl
          << "Townsville is safe again!" << endl;
+        
+    system("pause");
+    return 0;
 }
