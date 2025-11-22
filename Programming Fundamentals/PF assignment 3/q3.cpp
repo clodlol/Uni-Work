@@ -1,108 +1,133 @@
 #include <iostream>
+#include <limits>
 using namespace std;
 
-int longestIncStreak(int dataSet[], int size)
-{
-    int longest = 0;
-    int count = 0;
-    for (int i = 1; i < size; i++)
-    {
-        if (dataSet[i] > dataSet[i - 1])
-            count++;
-        else
-        {
-            if (count > longest)
-                longest = count;
-            count = 0;
-        }
-    }
+const double DOUBLE_MAX = std::numeric_limits<double>::max();
+const double DOUBLE_MIN = std::numeric_limits<double>::min();
 
-    if (count > longest)
-        longest = count;
+int countIncDecStreak(double dataSet[], int n, int mode); // mode = 0: Decreasing, mode = 1: Increasing
+int calculateCost(double dataSet[], int n, const int price = 270);
+int aboveAvgDays(double dataSet[], int n, const int threshold = 20);
 
-    return longest;
-}
-
-int longestDecStreak(int dataSet[], int size)
-{
-    int longest = 0;
-    int count = 0;
-    for (int i = 1; i < size; i++)
-    {
-        if (dataSet[i] < dataSet[i - 1])
-            count++;
-        else
-        {
-            if (count > longest)
-                longest = count;
-            count = 0;
-        }
-    }
-
-    if (count > longest)
-        longest = count;
-
-    return longest;
-}
-
-int totalDistance(int dataSet[], int size)
-{
-    int total = 0;
-    for (int i = 0; i < size; i++)
-    {
-        total += dataSet[i];
-    }
-    return total;
-}
-
-int totalCost(int totalDistance, const int price = 270)
-{
-    return totalDistance * price;
-}
-
-int aboveAvgDays(int dataSet[], int size, const int threshold = 20)
-{
-    double average = (double)totalDistance(dataSet, size) / size;
-    int count = 0;
-    for (int i = 0; i < size; i++)
-    {
-        double currentElement = (double)dataSet[i];
-        if (currentElement >= average * (1 + threshold / 100.0))
-            count++;
-    }
-    return count;
-}
+bool getInt(int &input, int rangeStart, int rangeEnd);
+bool getDouble(double &input, double rangeStart, double rangeEnd);
 
 int main()
 {
+    double distances[200] = {0};
     int n = 0;
+
     while (true)
     {
         cout << "Enter the number of distances: ";
-        cin >> n;
-
-        if (n < 1 || n > 200)
+        if (!getInt(n, 1, 200))
             continue;
         else
             break;
     }
 
-    int distances[n] = {0};
-
+    cout << "Distances of " << n << " days: " << endl;
     for (int i = 0; i < n;)
     {
-        cin >> distances[i];
-        if (distances[i] < 0)
+        cout << "[" << (i + 1) << "th day]: ";
+        if (!getDouble(distances[i], 0, DOUBLE_MAX))
             continue;
-
-        i++;
+        else
+            i++;
     }
 
-    cout << "Longest increasing streak: " << longestIncStreak(distances, n) << " days" << endl;
-    cout << "Longest decreasing streak: " << longestDecStreak(distances, n) << " days" << endl;
-    cout << "Fuel Cost: Rs. " << totalCost(totalDistance(distances, n)) << endl;
+    cout << "Longest increasing streak: " << countIncDecStreak(distances, n, 1) << " days" << endl;
+    cout << "Longest decreasing streak: " << countIncDecStreak(distances, n, 0) << " days" << endl;
+    cout << "Fuel Cost: Rs. " << calculateCost(distances, n) << endl;
     cout << "Above Avg +20\% Days: " << aboveAvgDays(distances, n) << endl;
 
     system("pause");
     return 0;
+}
+
+bool getInt(int &input, int rangeStart, int rangeEnd)
+{
+    if (cin >> input)
+    {
+        return (input >= rangeStart && input <= rangeEnd);
+    }
+    else
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return false;
+    }
+}
+
+bool getDouble(double &input, double rangeStart, double rangeEnd)
+{
+    if (cin >> input)
+    {
+        return (input >= rangeStart && input <= rangeEnd);
+    }
+    else
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return false;
+    }
+}
+
+int countIncDecStreak(double dataSet[], int n, int mode) // mode = 0: Decreasing, mode = 1: Increasing
+{
+    if (mode != 0 && mode != 1)
+    {
+        cout << "Invalid mode given to countIncDecStreak(). " << endl;
+        system("pause");
+        return -1;
+    }
+
+    int longest = 0;
+    int count = 0;
+    for (int i = 1; i < n; i++)
+    {
+        if (mode == 0 ? (dataSet[i] < dataSet[i - 1]) : (dataSet[i] > dataSet[i - 1]))
+        {
+            count++;
+            if (count > longest)
+
+                longest = count;
+        }
+
+        else
+        {
+            count = 0;
+        }
+    }
+
+    return longest;
+}
+
+int calculateCost(double dataSet[], int n, const int price)
+{
+    double total = 0;
+    for (int i = 0; i < n; i++)
+    {
+        total += dataSet[i];
+    }
+    return (total * price);
+}
+
+int aboveAvgDays(double dataSet[], int n, const int threshold)
+{
+
+    double total = 0;
+    for (int i = 0; i < n; i++)
+        total += dataSet[i];
+
+    double average = total / double(n);
+    int count = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        double currentElement = dataSet[i];
+        if (currentElement >= average * (double)(1.0 + threshold / 100.0))
+            count++;
+    }
+    return count;
 }

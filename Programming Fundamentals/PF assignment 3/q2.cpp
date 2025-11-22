@@ -1,8 +1,62 @@
 #include <iostream>
+#include <limits>
 #include <cmath>
 using namespace std;
 
-double calculateStdDev(double dataSet[], double mean, int n)
+double calculateStdDev(double dataSet[], int n, double mean);
+int calculateAboveAvg(double dataSet[], double mean, int n);
+
+bool getInt(int &input, int rangeStart, int rangeEnd);
+bool getDouble(double &input, double rangeStart, double rangeEnd);
+
+int main()
+{
+    int n = 0;
+    double marks[100] = {0};
+
+    while (true)
+    {
+        cout << "Enter the number of students: ";
+        if (!getInt(n, 1, INT_MAX))
+            continue;
+        else
+            break;
+    }
+
+    //double dataSet[n] = {0};
+    double largest = 0;
+    int lowest = 100;
+    double average = 0;
+
+    cout << "Student marks array: " << endl;
+    for (int i = 0; i < n;)
+    {
+        cout << "[" << i << "]: ";
+        if (!getDouble(marks[i], 0, 100))
+            continue;
+        else
+        {
+            double currentMarks = marks[i];
+            lowest = (currentMarks < lowest ? currentMarks : lowest);
+            largest = (currentMarks > largest ? currentMarks : largest);
+            average += currentMarks;
+            i++;
+        }
+    }
+
+    average /= double(n);
+
+    cout << "Highest: " << largest << endl;
+    cout << "Lowest: " << lowest << endl;
+    cout << "Average: " << average << endl;
+    cout << "Standard Deviation: " << calculateStdDev(marks, n, average) << endl;
+    cout << "Above Average: " << calculateAboveAvg(marks, average, n) << endl;
+
+    system("pause");
+    return 0;
+}
+
+double calculateStdDev(double dataSet[], int n, double mean)
 {
     double variance = 0;
     for (int i = 0; i < n; i++)
@@ -24,55 +78,30 @@ int calculateAboveAvg(double dataSet[], double mean, int n)
     return count;
 }
 
-int main()
+bool getInt(int &input, int rangeStart, int rangeEnd)
 {
-    int n = 0;
-    int marks[100] = {0};
-    while (true)
+    if (cin >> input)
     {
-        cout << "Enter the number of students: ";
-        cin >> n;
-
-        if (n < 1 || n > 100)
-            continue;
-        else
-            break;
+        return (input >= rangeStart && input <= rangeEnd);
     }
-
-    double dataSet[n] = {0};
-    int largest = 0;
-    int lowest = 100;
-    double average = 0;
-
-    for (int i = 0; i < n;)
+    else
     {
-        cin >> marks[i];
-        int currentMarks = marks[i];
-        if (currentMarks < 0 || currentMarks > 100)
-            continue;
-
-
-        dataSet[i] += currentMarks;
-        lowest = (currentMarks < lowest ? currentMarks : lowest);
-        largest = (currentMarks > largest ? currentMarks : largest);
-        average += currentMarks;
-        i++;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return false;
     }
-    average /= double(n);
+}
 
-    double variance = 0;
-    for (int i = 0; i < n; i++)
+bool getDouble(double &input, double rangeStart, double rangeEnd)
+{
+    if (cin >> input)
     {
-        variance += ((marks[i] - average) * (marks[i] - average));
+        return (input >= rangeStart && input <= rangeEnd);
     }
-    variance /= double(n);
-
-    cout << "Highest: " << largest << endl;
-    cout << "Lowest: " << lowest << endl;
-    cout << "Average: " << average << endl;
-    cout << "Standard Deviation: " << calculateStdDev(dataSet, average, n) << endl;
-    cout << "Above Average: " << calculateAboveAvg(dataSet, average, n) << endl;
-
-    system("pause");
-    return 0;
+    else
+    {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return false;
+    }
 }
