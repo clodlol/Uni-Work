@@ -4,25 +4,23 @@ using namespace std;
 
 bool getInt(int &input, int rangeStart, int rangeEnd);
 
-void removeDuplicates(int arr[], int n)
+int calculateUnion(int setA[], int sizeA, int setB[], int sizeB, int out[])
 {
-
-}
-
-void calculateUnion(int setA[], int sizeA, int setB[], int sizeB, int out[], int sizeOut)
-{
-    int counter = 0;
-    for (int i = 0; i < sizeA; i++)
+    // size of out in input must be sizeA+sizeB(maximum possible size for union set)
+    // the function returns the size of out[] array so it can be traversed easily
+    for(int i = 0; i < sizeA-1; i++)
     {
-        out[i] = setA[i];
-    }
+        bool found = false;
+        for(int j = 0; j < i; j++)
+        {
+            if(out[j] == setA[i])
+                found = true;
+                break;
+        }
 
-    for (int i = 0; i < sizeB; i++)
-    {
-        out[i + sizeA] = setB[i];
+        if(found)
+            out[i] = setA[i+1];
     }
-
-    removeDuplicates(out, sizeOut);
 }
 
 int main()
