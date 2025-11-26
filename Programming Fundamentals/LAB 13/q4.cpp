@@ -71,7 +71,7 @@ int main()
     porkyFile.close();
 
     int uniqueCounter = 0;
-    char uniques[36];
+    char uniques[72];
 
     for (int i = 0; i < 6; i++)
     {
@@ -92,7 +92,7 @@ int main()
     {
         cout << "Error occured while opening output file." << endl;
         system("pause");
-        return 01;
+        return -1;
     }
 
     cout << "Unique elements: ";
