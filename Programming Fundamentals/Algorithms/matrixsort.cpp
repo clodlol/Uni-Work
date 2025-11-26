@@ -67,22 +67,22 @@ int main()
     int matC[3][3] = {{5, 99, 88}, {4, 98, 88}, {3, 97, 89}};
 
     // entire matrix
-    int left = 0, right = 3 * 3 - 1;
-    while (right > left)
+    int leftC = 0, rightC = 3 * 3 - 1;
+    while (rightC > leftC)
     {
-        for (int i = left; i < right; i++)
+        for (int i = leftC; i < rightC; i++)
         {
             if (matC[i / 3][i % 3] > matC[(i + 1) / 3][(i + 1) % 3])
             {
                 swap(matC[i / 3][i % 3], matC[(i + 1) / 3][(i + 1) % 3]);
             }
         }
-        right--;
+        rightC--;
     }
 
-    for(int i = 0; i < 3; i++)
+    for (int i = 0; i < 3; i++)
     {
-        for(int j = 0; j < 3; j++)
+        for (int j = 0; j < 3; j++)
         {
             cout << matC[i][j] << " ";
         }
