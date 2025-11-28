@@ -4,47 +4,19 @@ using namespace std;
 
 bool getInt(int &input, int rangeStart, int rangeEnd);
 
-int calculateUnion(int setA[], int sizeA, int setB[], int sizeB, int out[])
+int min(int a, int b)
 {
-    for (int i = 0; i < sizeA; i++)
-    {
-        out[i] = setA[i];
-    }
-
-    for (int i = 0; i < sizeB; i++)
-    {
-        out[i + sizeA] = setB[i];
-    }
-
-    int temp[sizeA + sizeB] = {0};
-    int tempCounter = 0;
-
-    for (int i = 0; i < sizeA + sizeB; i++)
-    {
-        bool found = false;
-        for (int j = 0; j < tempCounter; j++)
-        {
-            if (temp[j] == out[i])
-            {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found)
-        {
-            temp[tempCounter] = out[i];
-            tempCounter++;
-        }
-    }
-
-    for (int i = 0; i < tempCounter; i++)
-    {
-        out[i] = temp[i];
-    }
-
-    return tempCounter;
+    return (a < b) ? a : b;
 }
+
+int max(int a, int b)
+{
+    return (a > b) ? a : b;
+}
+
+int calculateUnion(int setA[], int sizeA, int setB[], int sizeB, int out[]);
+int calculateIntersection(int setA[], int sizeA, int setB[], int sizeB, int out[]);
+int calculateDifference(int setA[], int sizeA, int setB[], int sizeB, int out[]);
 
 int main()
 {
@@ -87,8 +59,157 @@ int main()
             i++;
     }
 
+    int setUnion[m+n] = {0};
+    int unionLen = calculateUnion(first, m, second, n, setUnion);
+
+    int setIntesection[min(m, n)] = {0};
+    int intersectionLen = calculateIntersection(first, m, second, n, setIntesection);
+
+    int setDifference[m] = {0};
+    int differenceLen = calculateDifference(first, m, second, n, setDifference);
+
+    cout << endl;
+    cout << "Union: " << endl << "[";
+    for(int i = 0; i < unionLen; i++)
+    {
+        cout << setUnion[i] << " ";
+    }
+    cout << "]" << endl;
+
+    cout << endl;
+    cout << "Intersection: " << endl << "[";
+    for(int i = 0; i < intersectionLen; i++)
+    {
+        cout << setIntesection[i] << " ";
+    }
+    cout << "]" << endl;
+
+    cout << endl;
+    cout << "Difference: " << endl << "[";
+    for(int i = 0; i < differenceLen; i++)
+    {
+        cout << setDifference[i] << " ";
+    }
+    cout << "]" << endl;
+
     system("pause");
     return 0;
+}
+
+int calculateUnion(int setA[], int sizeA, int setB[], int sizeB, int out[])
+{
+    int temp[sizeA + sizeB] = {0};
+
+    for (int i = 0; i < sizeA; i++)
+    {
+        temp[i] = setA[i];
+    }
+
+    for (int i = 0; i < sizeB; i++)
+    {
+        temp[i + sizeA] = setB[i];
+    }
+
+    int outCounter = 0;
+
+    for (int i = 0; i < sizeA + sizeB; i++)
+    {
+        bool found = false;
+        for (int j = 0; j < outCounter; j++)
+        {
+            if (out[j] == temp[i])
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            out[outCounter] = temp[i];
+            outCounter++;
+        }
+    }
+
+    return outCounter;
+}
+
+int calculateIntersection(int setA[], int sizeA, int setB[], int sizeB, int out[])
+{
+    int outCounter = 0;
+
+    for (int i = 0; i < sizeA; i++)
+    {
+        bool found = false;
+        for (int j = 0; j < sizeB; j++)
+        {
+            if (setA[i] == setB[j])
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (found)
+        {
+            bool dupeFound = false;
+            for (int j = 0; j < outCounter; j++)
+            {
+                if (out[j] == setA[i])
+                {
+                    dupeFound = true;
+                    break;
+                }
+            }
+
+            if (!dupeFound)
+            {
+                out[outCounter] = setA[i];
+                outCounter++;
+            }
+        }
+    }
+
+    return outCounter;
+}
+
+int calculateDifference(int setA[], int sizeA, int setB[], int sizeB, int out[])
+{
+    int outCounter = 0;
+
+    for (int i = 0; i < sizeA; i++)
+    {
+        bool found = false;
+        for (int j = 0; j < sizeB; j++)
+        {
+            if (setA[i] == setB[j])
+            {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found)
+        {
+            bool dupeFound = false;
+            for (int j = 0; j < outCounter; j++)
+            {
+                if (out[j] == setA[i])
+                {
+                    dupeFound = true;
+                    break;
+                }
+            }
+
+            if (!dupeFound)
+            {
+                out[outCounter] = setA[i];
+                outCounter++;
+            }
+        }
+    }
+
+    return outCounter;
 }
 
 bool getInt(int &input, int rangeStart, int rangeEnd)
