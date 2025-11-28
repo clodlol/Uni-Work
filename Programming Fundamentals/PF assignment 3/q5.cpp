@@ -6,21 +6,44 @@ bool getInt(int &input, int rangeStart, int rangeEnd);
 
 int calculateUnion(int setA[], int sizeA, int setB[], int sizeB, int out[])
 {
-    // size of out in input must be sizeA+sizeB(maximum possible size for union set)
-    // the function returns the size of out[] array so it can be traversed easily
-    for(int i = 0; i < sizeA-1; i++)
+    for (int i = 0; i < sizeA; i++)
+    {
+        out[i] = setA[i];
+    }
+
+    for (int i = 0; i < sizeB; i++)
+    {
+        out[i + sizeA] = setB[i];
+    }
+
+    int temp[sizeA + sizeB] = {0};
+    int tempCounter = 0;
+
+    for (int i = 0; i < sizeA + sizeB; i++)
     {
         bool found = false;
-        for(int j = 0; j < i; j++)
+        for (int j = 0; j < tempCounter; j++)
         {
-            if(out[j] == setA[i])
+            if (temp[j] == out[i])
+            {
                 found = true;
                 break;
+            }
         }
 
-        if(found)
-            out[i] = setA[i+1];
+        if (!found)
+        {
+            temp[tempCounter] = out[i];
+            tempCounter++;
+        }
     }
+
+    for (int i = 0; i < tempCounter; i++)
+    {
+        out[i] = temp[i];
+    }
+
+    return tempCounter;
 }
 
 int main()
