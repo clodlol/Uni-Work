@@ -5,6 +5,8 @@ using namespace std;
 const double DOUBLE_MAX = std::numeric_limits<double>::max();
 const double DOUBLE_MIN = std::numeric_limits<double>::min();
 
+const int MAX_ARR_SIZE = 100;
+
 double transform(double x);
 double transform(double base, int power);
 double transform(double values[], int size);
@@ -16,7 +18,7 @@ int main()
 {
     double x = 0, base = 0;
     int power = 0, n = 0;
-    double arr[100] = {0};
+    double arr[MAX_ARR_SIZE] = {0};
 
     while (true)
     {
@@ -48,7 +50,7 @@ int main()
     while (true)
     {
         cout << "Enter the array size: ";
-        if (!getInt(n, 1, INT_MAX))
+        if (!getInt(n, 1, MAX_ARR_SIZE))
             continue;
         else
             break;

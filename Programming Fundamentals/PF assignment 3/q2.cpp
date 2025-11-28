@@ -3,6 +3,9 @@
 #include <cmath>
 using namespace std;
 
+const int MAX_MARKS_SIZE = 100;
+const double MAX_MARKS = 100.0;
+
 double calculateStdDev(double dataSet[], int n, double mean);
 int calculateAboveAvg(double dataSet[], double mean, int n);
 
@@ -12,7 +15,7 @@ bool getDouble(double &input, double rangeStart, double rangeEnd);
 int main()
 {
     int n = 0;
-    double marks[100] = {0};
+    double marks[MAX_MARKS_SIZE] = {0};
 
     while (true)
     {
@@ -25,14 +28,14 @@ int main()
 
     //double dataSet[n] = {0};
     double largest = 0;
-    int lowest = 100;
+    double lowest = MAX_MARKS;
     double average = 0;
 
     cout << "Student marks array: " << endl;
     for (int i = 0; i < n;)
     {
         cout << "[" << i << "]: ";
-        if (!getDouble(marks[i], 0, 100))
+        if (!getDouble(marks[i], 0, MAX_MARKS))
             continue;
         else
         {

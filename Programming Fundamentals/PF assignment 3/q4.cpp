@@ -7,7 +7,7 @@ const int n = 10;
 
 int main()
 {
-    char input[MAX_INPUT_SIZE] = {' '};
+    char input[MAX_INPUT_SIZE];
 
     while (true)
     {

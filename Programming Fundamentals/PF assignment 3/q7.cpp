@@ -13,8 +13,8 @@ bool getInt(int &input, int rangeStart, int rangeEnd);
 
 int main()
 {
-    int matrixA[MAX_INPUT_SIZE][MAX_INPUT_SIZE] = {{0}};
-    int matrixB[MAX_INPUT_SIZE][MAX_INPUT_SIZE] = {{0}};
+    int matrixA[MAX_INPUT_SIZE][MAX_INPUT_SIZE] = {0};
+    int matrixB[MAX_INPUT_SIZE][MAX_INPUT_SIZE] = {0};
     int l = 0, m = 0, n = 0, o = 0; // matrixA: lxm, matrixB: nxo
 
     while (true)

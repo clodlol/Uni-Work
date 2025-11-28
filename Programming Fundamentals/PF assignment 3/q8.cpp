@@ -41,7 +41,7 @@ int main()
     while (true)
     {
         cout << "Enter rotation constant k: ";
-        if (!getInt(k, 0, MAX_INPUT_SIZE))
+        if (!getInt(k, 0, INT_MAX))
             continue;
         else
             break;
@@ -101,7 +101,7 @@ int main()
     while (true)
     {
         cout << "Enter index to remove element from: ";
-        if (!getInt(indexB, 0, n-1))
+        if (!getInt(indexB, 0, n - 1))
             continue;
         else
             break;

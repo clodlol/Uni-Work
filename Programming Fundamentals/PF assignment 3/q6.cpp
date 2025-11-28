@@ -4,6 +4,7 @@
 using namespace std;
 
 const int MAX_INPUT_SIZE = 100;
+const double MAX_MARKS = 100.0;
 
 bool getDouble(double &input, double rangeStart, double rangeEnd);
 bool getInt(int &input, int rangeStart, int rangeEnd);
@@ -38,7 +39,7 @@ int main()
         for(int j = 0; j < n; )
         {
             cout << "Quiz " << (j+1) << ": ";
-            if(!getDouble(report[i][j], 0, 10))
+            if(!getDouble(report[i][j], 0, MAX_MARKS))
                 continue;
             else
                 j++;

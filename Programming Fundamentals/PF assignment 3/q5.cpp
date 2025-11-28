@@ -2,6 +2,8 @@
 #include <limits>
 using namespace std;
 
+const int MAX_SET_SIZE = 100;
+
 bool getInt(int &input, int rangeStart, int rangeEnd);
 
 int min(int a, int b)
@@ -20,11 +22,13 @@ int calculateDifference(int setA[], int sizeA, int setB[], int sizeB, int out[])
 
 int main()
 {
-    int first[100] = {0}, second[100] = {0}, m = 0, n = 0;
+    int first[MAX_SET_SIZE] = {0}, second[MAX_SET_SIZE] = {0};
+    int m = 0, n = 0;
+    
     while (true)
     {
         cout << "Enter the size of first set: ";
-        if (!getInt(m, 1, INT_MAX))
+        if (!getInt(m, 1, MAX_SET_SIZE))
             continue;
         else
             break;
@@ -33,7 +37,7 @@ int main()
     while (true)
     {
         cout << "Enter the size of second set: ";
-        if (!getInt(n, 1, INT_MAX))
+        if (!getInt(n, 1, MAX_SET_SIZE))
             continue;
         else
             break;

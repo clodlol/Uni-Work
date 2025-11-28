@@ -5,6 +5,8 @@ using namespace std;
 const double DOUBLE_MAX = std::numeric_limits<double>::max();
 const double DOUBLE_MIN = std::numeric_limits<double>::min();
 
+const int MAX_DISTANCES = 200;
+
 int countIncDecStreak(double dataSet[], int n, int mode); // mode = 0: Decreasing, mode = 1: Increasing
 int calculateCost(double dataSet[], int n, const int price = 270);
 int aboveAvgDays(double dataSet[], int n, const int threshold = 20);
@@ -14,7 +16,7 @@ bool getDouble(double &input, double rangeStart, double rangeEnd);
 
 int main()
 {
-    double distances[200] = {0};
+    double distances[MAX_DISTANCES] = {0};
     int n = 0;
 
     while (true)
