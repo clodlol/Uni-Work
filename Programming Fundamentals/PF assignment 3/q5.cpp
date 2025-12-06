@@ -24,7 +24,7 @@ int main()
 {
     int first[MAX_SET_SIZE] = {0}, second[MAX_SET_SIZE] = {0};
     int m = 0, n = 0;
-    
+
     while (true)
     {
         cout << "Enter the size of first set: ";
@@ -63,34 +63,37 @@ int main()
             i++;
     }
 
-    int setUnion[m+n] = {0};
+    int setUnion[MAX_SET_SIZE + MAX_SET_SIZE] = {0};
     int unionLen = calculateUnion(first, m, second, n, setUnion);
 
-    int setIntesection[min(m, n)] = {0};
+    int setIntesection[MAX_SET_SIZE] = {0};
     int intersectionLen = calculateIntersection(first, m, second, n, setIntesection);
 
-    int setDifference[m] = {0};
+    int setDifference[MAX_SET_SIZE] = {0};
     int differenceLen = calculateDifference(first, m, second, n, setDifference);
 
     cout << endl;
-    cout << "Union: " << endl << "[";
-    for(int i = 0; i < unionLen; i++)
+    cout << "Union: " << endl
+         << "[";
+    for (int i = 0; i < unionLen; i++)
     {
         cout << setUnion[i] << " ";
     }
     cout << "]" << endl;
 
     cout << endl;
-    cout << "Intersection: " << endl << "[";
-    for(int i = 0; i < intersectionLen; i++)
+    cout << "Intersection: " << endl
+         << "[";
+    for (int i = 0; i < intersectionLen; i++)
     {
         cout << setIntesection[i] << " ";
     }
     cout << "]" << endl;
 
     cout << endl;
-    cout << "Difference: " << endl << "[";
-    for(int i = 0; i < differenceLen; i++)
+    cout << "Difference: " << endl
+         << "[";
+    for (int i = 0; i < differenceLen; i++)
     {
         cout << setDifference[i] << " ";
     }
@@ -100,9 +103,9 @@ int main()
     return 0;
 }
 
-int calculateUnion(int setA[], int sizeA, int setB[], int sizeB, int out[])
+int calculateUnion(int setA[], const int sizeA, int setB[], const int sizeB, int out[])
 {
-    int temp[sizeA + sizeB] = {0};
+    int temp[MAX_SET_SIZE + MAX_SET_SIZE] = {0};
 
     for (int i = 0; i < sizeA; i++)
     {

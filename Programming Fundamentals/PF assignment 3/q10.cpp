@@ -1,5 +1,6 @@
 #include <iostream>
 #include <limits>
+#include <iomanip>
 using namespace std;
 
 bool getInt(int &input, int rangeStart, int rangeEnd);
@@ -38,6 +39,7 @@ int main()
             i++;
     }
 
+    cout << endl;
     int right = 1, bottom = 1, largestSubMatrixArea = INT_MIN;
     for (int i = bottom; i < m; i++)
     {
@@ -48,6 +50,7 @@ int main()
             {
                 for (int l = 0; l <= j; l++)
                 {
+                    cout << setw(2) << matrix[k][l] << " ";
                     if (matrix[k][l] % 2 == 0)
                     {
                         subMatrixEvens++;
@@ -57,15 +60,18 @@ int main()
                         subMatrixOdds++;
                     }
                 }
+                cout << endl;
             }
 
             if (subMatrixEvens == subMatrixOdds)
             {
-                subMatrixArea = (i) * (j);
+                subMatrixArea = (i + 1) * (j + 1);
                 if (subMatrixArea > largestSubMatrixArea)
                     largestSubMatrixArea = subMatrixArea;
             }
+            cout << endl;
         }
+        cout << endl;
     }
 
     cout << "Largest balanced submatrix has area: " << largestSubMatrixArea << endl;

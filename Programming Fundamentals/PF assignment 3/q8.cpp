@@ -47,7 +47,7 @@ int main()
             break;
     }
 
-    int rightRotated[n] = {0};
+    int rightRotated[MAX_INPUT_SIZE] = {0};
     rotateRight(items, n, k, rightRotated);
 
     cout << endl
@@ -55,7 +55,7 @@ int main()
     for (int i = 0; i < n; i++)
         cout << setw(4) << rightRotated[i] << " ";
 
-    int leftRotated[n] = {0};
+    int leftRotated[MAX_INPUT_SIZE] = {0};
     rotateLeft(items, n, k, leftRotated);
 
     cout << endl
@@ -86,7 +86,7 @@ int main()
             break;
     }
 
-    int afterInsertion[n + 1] = {0};
+    int afterInsertion[MAX_INPUT_SIZE + 1] = {0};
     insertOne(items, n, a, indexA, afterInsertion);
 
     cout << endl
@@ -107,7 +107,7 @@ int main()
             break;
     }
 
-    int afterRemoval[n - 1] = {0};
+    int afterRemoval[MAX_INPUT_SIZE - 1] = {0};
     removeOne(items, n, indexA, afterRemoval);
 
     cout << endl
