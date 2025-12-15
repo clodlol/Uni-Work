@@ -3,9 +3,9 @@ using namespace std;
 
 int main()
 {
-    const int n = 9;
-    int arr[n] = {1, 2, 3, 4, 6, 6, 7, 8, 9};
-    int a = 6;
+    int arr[] = {3, 6, 8, 12, 15, 18, 21, 25, 30, 35, 42, 48, 51, 57, 62};
+    const int n = sizeof(arr) / sizeof(int);
+    int a = 30;
     int foundIndex = -1;
 
     int start = 0;
