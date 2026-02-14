@@ -1,13 +1,13 @@
 #include <iostream>
 using namespace std;
 
-void populateMatrix(int **mat, const int &m, const int &n)
+void populateMatrix(int *const *const &mat, const int &m, const int &n)
 {
     for (int i = 0; i < (m * n); i++)
         mat[i / n][i % n] = rand();
 }
 
-void displayMatrix(int **mat, const int &m, const int &n)
+void displayMatrix(const int *const *const &mat, const int &m, const int &n)
 {
     for (int i = 0; i < m; i++)
     {
@@ -20,7 +20,7 @@ void displayMatrix(int **mat, const int &m, const int &n)
     cout << endl;
 }
 
-int **transposeMatrix(int **mat, const int &m, const int &n)
+int **transposeMatrix(const int *const *const &mat, const int &m, const int &n)
 {
     int **trans = new int *[n];
     for (int i = 0; i < m; i++)
@@ -37,6 +37,13 @@ int **transposeMatrix(int **mat, const int &m, const int &n)
     return trans;
 }
 
+void freeMatrix(const int *const *const &mat, const int &m)
+{
+    for (int i = 0; i < m; i++)
+        delete[] mat[i];
+    delete[] mat;
+}
+
 int main()
 {
     int m = 3, n = 3;
@@ -49,6 +56,10 @@ int main()
     displayMatrix(mat, m, n);
 
     int **trans = transposeMatrix(mat, m, n);
+
+    freeMatrix(mat, m);
+    mat = nullptr;
+
     displayMatrix(trans, n, m);
     return 0;
 }

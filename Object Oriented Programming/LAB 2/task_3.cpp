@@ -6,7 +6,7 @@ bool isSymbol(char c)
     return !isalnum(c) && !isspace(c);
 }
 
-void inputMatrix(char **mat, const int &rows, const int &cols)
+void inputMatrix(char *const *const &mat, const int &rows, const int &cols)
 {
     for (int i = 0; i < rows; i++)
     {
@@ -18,7 +18,7 @@ void inputMatrix(char **mat, const int &rows, const int &cols)
     }
 }
 
-void displayMatrix(char **mat, const int &rows, const int &cols)
+void displayMatrix(const char *const *const &mat, const int &rows, const int &cols)
 {
     for (int i = 0; i < rows; i++)
     {
@@ -35,88 +35,60 @@ char **allocateMatrix(const int &rows, const int &cols)
 {
     char **mat = new char *[rows];
     for (int i = 0; i < cols; i++)
-        mat[i] = new char[cols];
+    {
+        mat[i] = new char[cols + 1];
+        mat[i][cols] = '\0';
+    }
 
     return mat;
 }
 
-char *seperateAlpha(char **mat, const int &m, const int &n, int &alphaCount)
+char *seperate(const char *const *const &mat, const int &m, const int &n, const int &mode)
 {
-    alphaCount = 0;
+    // mode: 0 = alphabets, 1 = numbers, 2 = symbols
+    if (mode < 0 || mode > 2)
+        return nullptr;
+
+    int tokenCount = 0;
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            if (isalpha(mat[i][j]))
-                alphaCount++;
+            if (mode == 0 && isalpha(mat[i][j]))
+                tokenCount++;
+            else if (mode == 1 && isdigit(mat[i][j]))
+                tokenCount++;
+            else if (mode == 2 && isSymbol(mat[i][j]))
+                tokenCount++;
         }
     }
 
-    char *alphaArr = new char[alphaCount];
+    char *tokenArr = new char[tokenCount + 1];
+    tokenArr[tokenCount] = '\0';
     int c = 0;
     for (int i = 0; i < m; i++)
     {
         for (int j = 0; j < n; j++)
         {
-            if (isalpha(mat[i][j]))
-                alphaArr[c++] = mat[i][j];
+            if (mode == 0 && isalpha(mat[i][j]))
+                tokenArr[c++] = mat[i][j];
+            else if (mode == 1 && isdigit(mat[i][j]))
+                tokenArr[c++] = mat[i][j];
+            else if (mode == 2 && isSymbol(mat[i][j]))
+                tokenArr[c++] = mat[i][j];
         }
     }
 
-    return alphaArr;
+    return tokenArr;
 }
 
-char *seperateDigits(char **mat, const int &m, const int &n, int &digitCount)
+void freeMatrix(const char *const *const &mat, const int &m)
 {
-    digitCount = 0;
     for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            if (isdigit(mat[i][j]))
-                digitCount++;
-        }
-    }
-
-    char *digitArr = new char[digitCount];
-    int c = 0;
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            if (isdigit(mat[i][j]))
-                digitArr[c++] = mat[i][j];
-        }
-    }
-
-    return digitArr;
+        delete[] mat[i];
+    delete[] mat;
 }
 
-char *seperateSymbols(char **mat, const int &m, const int &n, int &symbolCount)
-{
-    symbolCount = 0;
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            if (isSymbol(mat[i][j]))
-                symbolCount++;
-        }
-    }
-
-    char *symbolsArr = new char[symbolCount];
-    int c = 0;
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
-        {
-            if (isSymbol(mat[i][j]))
-                symbolsArr[c++] = mat[i][j];
-        }
-    }
-
-    return symbolsArr;
-}
 int main()
 {
     int m = 3, n = 3, alphaCount = 0, digitCount = 0, symbolCount = 0;
@@ -124,23 +96,23 @@ int main()
     inputMatrix(mat, m, n);
     displayMatrix(mat, m, n);
 
-    char *alphas = seperateAlpha(mat, m, n, alphaCount);
-    char *digits = seperateDigits(mat, m, n, digitCount);
-    char *symbols = seperateSymbols(mat, m, n, symbolCount);
+    char *alphas = seperate(mat, m, n, 0);
+    char *digits = seperate(mat, m, n, 1);
+    char *symbols = seperate(mat, m, n, 2);
+
+    freeMatrix(mat, m);
+    mat = nullptr;
 
     cout << "Alphabets: ";
-    for (int i = 0; i < alphaCount; i++)
-        cout << alphas[i] << " ";
+    cout << alphas << endl;
 
     cout << endl
          << "Digits: ";
-    for (int i = 0; i < digitCount; i++)
-        cout << digits[i] << " ";
+    cout << digits << endl;
 
     cout << endl
          << "Symbols: ";
-    for (int i = 0; i < symbolCount; i++)
-        cout << symbols[i] << " ";
+    cout << symbols << endl;
 
     return 0;
 }
