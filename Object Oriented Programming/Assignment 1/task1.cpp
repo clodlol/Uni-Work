@@ -10,7 +10,7 @@ const int MAX_SENTENCE_SIZE = 1000;
 
 int getRandomNum(int min, int max);
 void printDict(const char *const *const &dict);
-bool checkDupeInDict(const char *const *const &dict, const int &checkingRange, const char *targetWord);
+bool checkDupeInDict(const char *const *const &dict, const int &checkingRange, const char *const &targetWord);
 char **compileDict(const char *const &input);
 char *inputSynonym(int &synonymSize);
 void printSynDict(const char *const *const *const &synDict, const int &wordCount);
@@ -71,7 +71,7 @@ void printDict(const char *const *const &dict)
     }
 }
 
-bool checkDupeInDict(const char *const *const &dict, const int &checkingRange, const char *targetWord)
+bool checkDupeInDict(const char *const *const &dict, const int &checkingRange, const char *const &targetWord)
 {
     bool dupe = false;
     for (int i = 0; i < checkingRange; i++)
