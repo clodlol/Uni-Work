@@ -8,6 +8,55 @@ const int MAX_DICT_SIZE = 100;
 const int MAX_SYN_SIZE = 100;
 const int MAX_SENTENCE_SIZE = 1000;
 
+int getRandomNum(int min, int max);
+void printDict(const char *const *const &dict);
+bool checkDupeInDict(const char *const *const &dict, const int &checkingRange, const char *targetWord);
+char **compileDict(const char *const &input);
+char *inputSynonym(int &synonymSize);
+void printSynDict(const char *const *const *const &synDict, const int &wordCount);
+int getDictSize(const char *const *const &dict);
+int getSynCount(const char *const *const *const &synDict, const int &index);
+char ***compileSynDict(const char *const *const &inputDict);
+char **dictIntersection(const char *const *const &dictA, const char *const *const &dictB);
+char *replaceSyn(const char *const &input, const char *const *const *const &synDict);
+
+// char *readInputFromFile(string filename)
+// {
+//     int size = 0, c = 0; // null terminator
+//     fstream file(filename, ios::in);
+//     string s;
+
+//     while (getline(file, s))
+//     {
+//         size += s.size();
+//     }
+
+//     char *input = new char[size + 1];
+//     while (getline(file, s))
+//     {
+//         for (int i = 0; i < s.size(); i++)
+//             input[c++] = s[i];
+//     }
+//     input[c] = '\0';
+
+//     cout << input << endl;
+
+//     return input;
+// }
+
+int main()
+{
+    char *input = "This is my assignment.";
+    char **dict = compileDict(input);
+    char ***synDict = compileSynDict(dict);
+
+    char *replaced = replaceSyn(input, synDict);
+
+    cout << replaced << endl;
+
+    return 0;
+}
+
 int getRandomNum(int min, int max)
 {
     int randNum = rand() % (max - min + 1) + min;
@@ -263,41 +312,4 @@ char *replaceSyn(const char *const &input, const char *const *const *const &synD
     temp = nullptr;
 
     return output;
-}
-
-// char *readInputFromFile(string filename)
-// {
-//     int size = 0, c = 0; // null terminator
-//     fstream file(filename, ios::in);
-//     string s;
-
-//     while (getline(file, s))
-//     {
-//         size += s.size();
-//     }
-
-//     char *input = new char[size + 1];
-//     while (getline(file, s))
-//     {
-//         for (int i = 0; i < s.size(); i++)
-//             input[c++] = s[i];
-//     }
-//     input[c] = '\0';
-
-//     cout << input << endl;
-
-//     return input;
-// }
-
-int main()
-{
-    char *input = "This is my assignment.";
-    char **dict = compileDict(input);
-    char ***synDict = compileSynDict(dict);
-
-    char *replaced = replaceSyn(input, synDict);
-
-    cout << replaced << endl;
-
-    return 0;
 }
