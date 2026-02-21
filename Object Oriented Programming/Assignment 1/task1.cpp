@@ -256,7 +256,7 @@ char *replaceSyn(const char *const &input, const char *const *const *const &synD
 
     for (int i = 0; input[i] != '\0'; i++)
     {
-        if (input[i] == ' ' || i == 0)
+        if (input[i] == ' ' || i == 0) // this would not apply if we count spaces in synonyms
         {
             int foundIndex = -1;
             string currentWord;
