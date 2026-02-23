@@ -7,6 +7,7 @@ using namespace std;
 const int MAX_DICT_SIZE = 100;
 const int MAX_SYN_SIZE = 100;
 const int MAX_SENTENCE_SIZE = 1000;
+const int MAX_WORD_SIZE = 100;
 
 int getRandomNum(int min, int max);
 void printDict(const char *const *const &dict);
@@ -46,15 +47,29 @@ char *replaceSyn(const char *const &input, const char *const *const *const &synD
 
 int main()
 {
-    char *input = "This is my assignment.";
+    char *input = "This is my assignment";
     char **dict = compileDict(input);
     char ***synDict = compileSynDict(dict);
 
-    char *replaced = replaceSyn(input, synDict);
-
-    cout << replaced << endl;
+    printSynDict(synDict, getDictSize(dict));
 
     return 0;
+}
+
+char *extractWord(const char str[], int index)
+{
+    int tempWordCounter = 0;
+    char tempWord[MAX_WORD_SIZE];
+    for (int i = index; (str[i] != ' ' && str[i] != '\0'); i++)
+    {
+        tempWord[tempWordCounter++] = str[i];
+    }
+    tempWord[tempWordCounter] = '\0';
+
+    char *word = new char[tempWordCounter + 1];
+    strcpy(word, tempWord);
+
+    return word;
 }
 
 int getRandomNum(int min, int max)
@@ -87,42 +102,27 @@ char **compileDict(const char *const &input)
 {
     char **temp = new char *[MAX_DICT_SIZE];
 
-    int wordCount = 0;
-    for (int i = 0; input[i] != '\0'; i++)
+    int i = 0, wordCount = 0;
+    while (i < strlen(input))
     {
-        if (input[i] == ' ' || i == 0)
+        char *currentWord = extractWord(input, i);
+        bool dupe = checkDupeInDict(temp, wordCount, currentWord);
+
+        if (!dupe)
         {
-            string currentWord;
-            int letterCount = 0;
-            for (int j = ((i == 0) ? (i) : (i + 1)); (input[j] != ' ' && input[j] != '\0' && input[j] != '.'); j++)
-            {
-                letterCount++;
-                currentWord += input[j];
-            }
-
-            bool dupe = checkDupeInDict(temp, wordCount, currentWord.c_str());
-
-            if (!dupe)
-            {
-                temp[wordCount] = new char[letterCount + 1];
-
-                for (int k = 0; k < letterCount; k++)
-                {
-                    temp[wordCount][k] = input[((i == 0) ? (i) : (i + 1)) + k];
-                }
-                temp[wordCount][letterCount] = '\0';
-
-                wordCount++;
-            }
+            temp[wordCount] = new char[strlen(currentWord) + 1];
+            strcpy(temp[wordCount++], currentWord);
         }
+
+        i += (strlen(currentWord) + 1); // +1 for whitespace
     }
 
     char **dict = new char *[wordCount + 1];
-    for (int i = 0; i < wordCount; i++)
+    for (int j = 0; j < wordCount; j++)
     {
-        dict[i] = new char[strlen(temp[i]) + 1];
-        strcpy(dict[i], temp[i]);
-        delete[] temp[i];
+        dict[j] = new char[strlen(temp[j]) + 1];
+        strcpy(dict[j], temp[j]);
+        delete[] temp[j];
     }
     delete[] temp;
     temp = nullptr;
@@ -131,7 +131,7 @@ char **compileDict(const char *const &input)
     return dict;
 }
 
-char *inputSynonym(int &synonymSize)
+char *inputSynonym()
 {
     string input;
     while (input.size() <= 0)
@@ -145,7 +145,6 @@ char *inputSynonym(int &synonymSize)
         inputPtr[i] = input[i];
     inputPtr[inputSize] = '\0';
 
-    synonymSize = inputSize;
     return inputPtr;
 }
 
@@ -194,9 +193,9 @@ char ***compileSynDict(const char *const *const &inputDict)
         for (int j = 0; j < x; j++)
         {
             int synSize = MAX_SYN_SIZE;
-            char *tempSynonym = inputSynonym(synSize);
+            char *tempSynonym = inputSynonym();
 
-            synonymDict[i][j] = new char[synSize + 1];
+            synonymDict[i][j] = new char[strlen(tempSynonym) + 1];
             strcpy(synonymDict[i][j], tempSynonym);
         }
         synonymDict[i][x] = "\0"; // use an empty string for a sentinel value

@@ -5,17 +5,17 @@ const int MAX_WORD_LEN = 50, MAX_WORD_COUNT = 50, MAX_POSITION_COUNT = 50;
 
 char *extractWord(char str[], int index)
 {
-    // extract next word starting from index from str
-    int currentWordTempC = 0;
-    char currentWordTemp[MAX_WORD_LEN];
-    for (int j = index; (str[j] != ' ' && str[j] != '\0'); j++)
+    int tempWordCounter = 0;
+    char tempWord[MAX_WORD_LEN];
+    for (int i = index; (str[i] != ' ' && str[i] != '\0'); i++)
     {
-        currentWordTemp[currentWordTempC++] = str[j];
+        tempWord[tempWordCounter++] = str[i];
     }
-    currentWordTemp[currentWordTempC] = '\0';
+    tempWord[tempWordCounter] = '\0';
 
-    char *word = new char[currentWordTempC + 1];
-    strcpy(word, currentWordTemp);
+    char *word = new char[tempWordCounter + 1];
+    strcpy(word, tempWord);
+
     return word;
 }
 
@@ -83,7 +83,7 @@ int **Word_Positions(char input[], int &wordCount)
 int main()
 {
     int wordCount = 0;
-    char str[] = "hello world hello";
+    char str[] = "hello world hello world hello nigger baka kutta";
     int **positions = Word_Positions(str, wordCount);
 
     for (int i = 0; i < wordCount; i++)
