@@ -4,6 +4,23 @@ using namespace std;
 const int M = 20;
 const int N = 100;
 const int DICT_MAX_SIZE = 100;
+const int MAX_WORD_SIZE = 100;
+
+char *extractWord(const char str[], int index)
+{
+    int tempWordCounter = 0;
+    char tempWord[MAX_WORD_SIZE];
+    for (int i = index; (str[i] != ' ' && str[i] != '\0'); i++)
+    {
+        tempWord[tempWordCounter++] = str[i];
+    }
+    tempWord[tempWordCounter] = '\0';
+
+    char *word = new char[tempWordCounter + 1];
+    strcpy(word, tempWord);
+
+    return word;
+}
 
 void printHashtagDict(const char *const *const &dict)
 {
@@ -35,21 +52,15 @@ char **extractHashtags(const char tweets[][N], const int &M)
         {
             if (tweets[i][j] == '#')
             {
-                string currHashtag;
-                for (int k = j + 1; (tweets[i][k] != ' ' && tweets[i][k] != '#' && tweets[i][k] != '\0'); k++)
-                {
-                    currHashtag += tweets[i][k];
-                }
+                char *currHashtag = extractWord(tweets[i], j + 1);
 
-                bool dupe = checkDupeInDict(tempDict, hashtagCounter, currHashtag.c_str());
+                bool dupe = checkDupeInDict(tempDict, hashtagCounter, currHashtag);
 
                 if (!dupe)
                 {
-                    int currentHashtagSize = currHashtag.size();
+                    int currentHashtagSize = strlen(currHashtag);
                     tempDict[hashtagCounter] = new char[currentHashtagSize + 1];
-                    strcpy(tempDict[hashtagCounter], currHashtag.c_str());
-                    tempDict[hashtagCounter][currentHashtagSize] = '\0';
-                    hashtagCounter++;
+                    strcpy(tempDict[hashtagCounter++], currHashtag);
                 }
             }
         }
