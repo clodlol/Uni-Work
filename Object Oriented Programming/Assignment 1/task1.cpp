@@ -13,7 +13,7 @@ int getRandomNum(int min, int max);
 void printDict(const char *const *const &dict);
 bool checkDupeInDict(const char *const *const &dict, const int &checkingRange, const char *const &targetWord);
 char **compileDict(const char *const &input);
-char *inputSynonym(int &synonymSize);
+char *inputSynonym();
 void printSynDict(const char *const *const *const &synDict, const int &wordCount);
 int getDictSize(const char *const *const &dict);
 int getSynCount(const char *const *const *const &synDict, const int &index);
@@ -50,8 +50,9 @@ int main()
     char *input = "This is my assignment";
     char **dict = compileDict(input);
     char ***synDict = compileSynDict(dict);
+    char *data = "This is my assignment";
 
-    printSynDict(synDict, getDictSize(dict));
+    cout << replaceSyn(data, synDict) << endl;
 
     return 0;
 }
@@ -141,8 +142,7 @@ char *inputSynonym()
 
     int inputSize = input.size();
     char *inputPtr = new char[inputSize + 1];
-    for (int i = 0; i < inputSize; i++)
-        inputPtr[i] = input[i];
+    strcpy(inputPtr, input.c_str());
     inputPtr[inputSize] = '\0';
 
     return inputPtr;
@@ -192,11 +192,10 @@ char ***compileSynDict(const char *const *const &inputDict)
         synonymDict[i] = new char *[x + 1];
         for (int j = 0; j < x; j++)
         {
-            int synSize = MAX_SYN_SIZE;
-            char *tempSynonym = inputSynonym();
+            char *inputSyn = inputSynonym();
 
-            synonymDict[i][j] = new char[strlen(tempSynonym) + 1];
-            strcpy(synonymDict[i][j], tempSynonym);
+            synonymDict[i][j] = new char[strlen(inputSyn) + 1];
+            strcpy(synonymDict[i][j], inputSyn);
         }
         synonymDict[i][x] = "\0"; // use an empty string for a sentinel value
     }
@@ -227,8 +226,7 @@ char **dictIntersection(const char *const *const &dictA, const char *const *cons
         if (!dupe && found)
         {
             tempInter[sizeInter] = new char[strlen(dictA[i]) + 1];
-            strcpy(tempInter[sizeInter], dictA[i]);
-            sizeInter++;
+            strcpy(tempInter[sizeInter++], dictA[i]);
         }
     }
 
@@ -253,53 +251,53 @@ char *replaceSyn(const char *const &input, const char *const *const *const &synD
     char *temp = new char[MAX_SENTENCE_SIZE];
     char **inputDict = compileDict(input);
 
-    for (int i = 0; input[i] != '\0'; i++)
+    for (int i = 0; i < strlen(input);)
     {
-        if (input[i] == ' ' || i == 0) // this would not apply if we count spaces in synonyms
+        int foundIndex = -1;
+        char *currentWord = extractWord(input, i);
+        for (int i = 0; i < getDictSize(inputDict); i++)
         {
-            int foundIndex = -1;
-            string currentWord;
-            for (int j = (i == 0 ? i : (i + 1)); (input[j] != ' ' && input[j] != '\0' && input[j] != '.'); j++)
+            if (strcmp(inputDict[i], currentWord) == 0)
             {
-                currentWord += input[j];
+                foundIndex = i;
+                break;
+            }
+        }
+
+        if (foundIndex == -1)
+        {
+            for (int i = 0; i < strlen(currentWord); i++)
+            {
+                temp[tempCounter++] = currentWord[i];
             }
 
-            for (int i = 0; i < getDictSize(inputDict); i++)
+            temp[tempCounter++] = ' ';
+        }
+        else
+        {
+            int synCount = getSynCount(synDict, foundIndex);
+            if (synCount == 0)
             {
-                if (strcmp(inputDict[i], currentWord.c_str()) == 0)
+                for (int i = 0; i < strlen(currentWord); i++)
                 {
-                    foundIndex = i;
-                    break;
+                    temp[tempCounter++] = currentWord[i];
                 }
-            }
 
-            if (foundIndex == -1)
-            {
-                temp[tempCounter++] = input[i];
+                temp[tempCounter++] = ' ';
             }
             else
             {
-                int synCount = getSynCount(synDict, foundIndex);
-
-                if (i != 0)
-                    temp[tempCounter++] = ' ';
-
-                if (synCount == 0)
-                {
-                    for (int i = 0; i < currentWord.size(); i++)
-                    {
-                        temp[tempCounter++] = currentWord[i];
-                    }
-                    continue;
-                }
-
-                int randomSynIndex = getRandomNum(0, synCount - 1);
+                int randomSynIndex = getRandomNum(0, synCount - 1); // i have to change this randomized ahh logic
                 for (int i = 0; i < strlen(synDict[foundIndex][randomSynIndex]); i++)
                 {
                     temp[tempCounter++] = synDict[foundIndex][randomSynIndex][i];
                 }
+
+                temp[tempCounter++] = ' ';
             }
         }
+
+        i += (strlen(currentWord) + 1); // +1 for space
     }
 
     temp[tempCounter] = '\0';
