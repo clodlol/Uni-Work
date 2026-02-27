@@ -137,7 +137,7 @@ char *inputSynonym()
     string input;
     while (input.size() <= 0)
     {
-        cin >> input;
+        getline(cin, input);
     }
 
     int inputSize = input.size();
@@ -287,10 +287,20 @@ char *replaceSyn(const char *const &input, const char *const *const *const &synD
             }
             else
             {
-                int randomSynIndex = getRandomNum(0, synCount - 1); // i have to change this randomized ahh logic
-                for (int i = 0; i < strlen(synDict[foundIndex][randomSynIndex]); i++)
+                int synIndex = -1, synCount = getSynCount(synDict, foundIndex);
+                cout << "Synonyms found for " << currentWord << ": ";
+                for (int j = 0; j < synCount; j++)
+                    cout << (j) << ". " << synDict[foundIndex][j] << " ";
+                cout << endl
+                     << "Choose your option: ";
+                cin.ignore(100000, '\n');
+                while (synIndex < 0 || synIndex >= synCount)
                 {
-                    temp[tempCounter++] = synDict[foundIndex][randomSynIndex][i];
+                    cin >> synIndex;
+                }
+                for (int j = 0; j < strlen(synDict[foundIndex][synIndex]); j++)
+                {
+                    temp[tempCounter++] = synDict[foundIndex][synIndex][j];
                 }
 
                 temp[tempCounter++] = ' ';
