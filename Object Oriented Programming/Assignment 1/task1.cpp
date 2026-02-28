@@ -9,50 +9,26 @@ const int MAX_SYN_SIZE = 100;
 const int MAX_SENTENCE_SIZE = 1000;
 const int MAX_WORD_SIZE = 100;
 
-int getRandomNum(int min, int max);
-void printDict(const char *const *const &dict);
 bool checkDupeInDict(const char *const *const &dict, const int &checkingRange, const char *const &targetWord);
 char **compileDict(const char *const &input);
-char *inputSynonym();
-void printSynDict(const char *const *const *const &synDict, const int &wordCount);
-int getDictSize(const char *const *const &dict);
-int getSynCount(const char *const *const *const &synDict, const int &index);
 char ***compileSynDict(const char *const *const &inputDict);
 char **dictIntersection(const char *const *const &dictA, const char *const *const &dictB);
+char *inputSynonym();
+char *readInput(const char *const &filename);
 char *replaceSyn(const char *const &input, const char *const *const *const &synDict);
-
-// char *readInputFromFile(string filename)
-// {
-//     int size = 0, c = 0; // null terminator
-//     fstream file(filename, ios::in);
-//     string s;
-
-//     while (getline(file, s))
-//     {
-//         size += s.size();
-//     }
-
-//     char *input = new char[size + 1];
-//     while (getline(file, s))
-//     {
-//         for (int i = 0; i < s.size(); i++)
-//             input[c++] = s[i];
-//     }
-//     input[c] = '\0';
-
-//     cout << input << endl;
-
-//     return input;
-// }
+int getDictSize(const char *const *const &dict);
+int getSynCount(const char *const *const *const &synDict, const int &index);
+void printDict(const char *const *const &dict);
+void printSynDict(const char *const *const *const &synDict, const int &wordCount);
+void writeOutput(const char *const &filename, const char *const &output);
 
 int main()
 {
-    char *input = "This is my assignment";
+    char *input = readInput("in.txt");
     char **dict = compileDict(input);
     char ***synDict = compileSynDict(dict);
-    char *data = "This is my assignment";
-
-    cout << replaceSyn(data, synDict) << endl;
+    char *data = readInput("data.txt");
+    writeOutput("out.txt", replaceSyn(data, synDict));
 
     return 0;
 }
@@ -71,12 +47,6 @@ char *extractWord(const char str[], int index)
     strcpy(word, tempWord);
 
     return word;
-}
-
-int getRandomNum(int min, int max)
-{
-    int randNum = rand() % (max - min + 1) + min;
-    return randNum;
 }
 
 void printDict(const char *const *const &dict)
@@ -291,9 +261,8 @@ char *replaceSyn(const char *const &input, const char *const *const *const &synD
                 cout << "Synonyms found for " << currentWord << ": ";
                 for (int j = 0; j < synCount; j++)
                     cout << (j) << ". " << synDict[foundIndex][j] << " ";
-                cout << endl
+                cout << "\n"
                      << "Choose your option: ";
-                cin.ignore(100000, '\n');
                 while (synIndex < 0 || synIndex >= synCount)
                 {
                     cin >> synIndex;
@@ -319,4 +288,39 @@ char *replaceSyn(const char *const &input, const char *const *const *const &synD
     temp = nullptr;
 
     return output;
+}
+
+char *readInput(const char *const &filename)
+{
+    int tempCounter = 0;
+    char temp[MAX_SENTENCE_SIZE];
+    fstream file("in.txt", ios::in);
+    string l;
+
+    if (!file.is_open())
+        return nullptr;
+
+    while (getline(file, l))
+    {
+        for (int i = 0; i < l.size(); i++)
+            temp[tempCounter++] = l[i];
+    }
+
+    temp[tempCounter] = '\0';
+    char *input = new char[tempCounter + 1];
+    strcpy(input, temp);
+
+    file.close();
+    return input;
+}
+
+void writeOutput(const char *const &filename, const char *const &output)
+{
+    fstream file("out.txt", ios::out);
+    if (!file.is_open())
+        return;
+
+    file << output;
+
+    file.close();
 }
