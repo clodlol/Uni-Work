@@ -10,12 +10,13 @@ const int MAX_SYN_SIZE = 100;
 const int MAX_WORD_SIZE = 100;
 
 bool checkDupeInDict(const char *const *const &dict, const int &checkingRange, const char *const &targetWord);
+bool stringCmp(const char *const &a, const char *const &b, const int &rangeStart, const int &rangeEnd);
 char **compileDict(const char *const &input);
 char ***compileSynDict(const char *const *const &inputDict);
 char **dictIntersection(const char *const *const &dictA, const char *const *const &dictB);
 char *inputSynonym();
 char *readInput(const char *const &filename);
-char *replaceSyn(const char *const &input, const char *const *const *const &synDict);
+char *replaceSyn(const char *const &input, const char *const *const &inputDict, const char *const *const *const &synDict);
 int getDictSize(const char *const *const &dict);
 int getSynCount(const char *const *const *const &synDict, const int &index);
 void printDict(const char *const *const &dict);
@@ -28,7 +29,7 @@ int main()
     char **dict = compileDict(input);
     char ***synDict = compileSynDict(dict);
     char *data = readInput("data.txt");
-    writeOutput("out.txt", replaceSyn(data, synDict));
+    writeOutput("out.txt", replaceSyn(data, dict, synDict));
     cout << "Ouput generated!" << "\n";
     return 0;
 }
@@ -77,7 +78,20 @@ char **compileDict(const char *const &input)
     while (i < strlen(input))
     {
         char *currentWord = extractWord(input, i);
+        int wordLen = strlen(currentWord);
         bool dupe = checkDupeInDict(temp, wordCount, currentWord);
+
+        if (currentWord[wordLen - 1] == '.') // If the word contains a fullstop, remove it
+        {
+            char *temp = new char[wordLen - 1];
+            for (int i = 0; i < wordLen - 1; i++)
+            {
+                temp[i] = currentWord[i];
+            }
+            temp[wordLen - 1] = '\0';
+            delete[] currentWord;
+            currentWord = temp;
+        }
 
         if (!dupe)
         {
@@ -215,75 +229,92 @@ char **dictIntersection(const char *const *const &dictA, const char *const *cons
     return inter;
 }
 
-char *replaceSyn(const char *const &input, const char *const *const *const &synDict)
+char *replaceSyn(const char *const &data, const char *const *const &inputDict, const char *const *const *const &synDict)
 {
     int tempCounter = 0;
     char *temp = new char[MAX_SENTENCE_SIZE];
-    char **inputDict = compileDict(input);
 
-    for (int i = 0; i < strlen(input);)
+    printDict(inputDict);
+
+    for (int i = 0; i < strlen(data);)
     {
-        int foundIndex = -1;
-        char *currentWord = extractWord(input, i);
-        for (int i = 0; i < getDictSize(inputDict); i++)
+        char *currentWord = extractWord(data, i);
+        int foundIndex = -1, wordLen = strlen(currentWord), dictSize = getDictSize(inputDict);
+        for (int j = 0; j < dictSize; j++)
         {
-            if (strcmp(inputDict[i], currentWord) == 0)
+            // exclude fullstop if it exists in currentWord while comparing
+            if (currentWord[wordLen - 1] == '.')
             {
-                foundIndex = i;
-                break;
+                if (stringCmp(inputDict[j], currentWord, 0, wordLen - 2))
+                {
+                    foundIndex = j;
+                    break;
+                }
+            }
+            else
+            {
+                if (stringCmp(inputDict[j], currentWord, 0, wordLen - 1))
+                {
+                    foundIndex = j;
+                    break;
+                }
             }
         }
 
         if (foundIndex == -1)
         {
-            for (int i = 0; i < strlen(currentWord); i++)
+            for (int j = 0; j < wordLen; j++)
             {
-                temp[tempCounter++] = currentWord[i];
+                temp[tempCounter++] = currentWord[j];
             }
 
             temp[tempCounter++] = ' ';
         }
         else
         {
-            int synCount = getSynCount(synDict, foundIndex);
+            int synCount = getSynCount(synDict, foundIndex), synIndex = -1;
             if (synCount == 0)
             {
-                for (int i = 0; i < strlen(currentWord); i++)
+                for (int j = 0; j < wordLen; j++)
                 {
-                    temp[tempCounter++] = currentWord[i];
+                    temp[tempCounter++] = currentWord[j];
                 }
 
                 temp[tempCounter++] = ' ';
+                i += (wordLen + 1); // +1 for space
+                continue;
             }
-            else
+            else if (synCount == 1)
             {
-                int synIndex = -1, synCount = getSynCount(synDict, foundIndex);
-                if (synCount > 1)
-                {
-                    cout << "Synonyms found for " << currentWord << ": ";
-                    for (int j = 0; j < synCount; j++)
-                        cout << (j) << ". " << synDict[foundIndex][j] << " ";
-                    cout << "\n"
-                         << "Choose your option: ";
-                    while (synIndex < 0 || synIndex >= synCount)
-                    {
-                        cin >> synIndex;
-                    }
-                }
-                else
-                {
-                    synIndex = 0;
-                }
-                for (int j = 0; j < strlen(synDict[foundIndex][synIndex]); j++)
-                {
-                    temp[tempCounter++] = synDict[foundIndex][synIndex][j];
-                }
-
-                temp[tempCounter++] = ' ';
+                synIndex = 0;
             }
+            else if (synCount > 1)
+            {
+                cout << "Synonyms found for " << currentWord << ": ";
+                for (int j = 0; j < synCount; j++)
+                    cout << (j) << ". " << synDict[foundIndex][j] << " ";
+                cout << "\n"
+                     << "Choose your option: ";
+                while (synIndex < 0 || synIndex >= synCount)
+                {
+                    cin >> synIndex;
+                }
+            }
+
+            for (int j = 0; j < strlen(synDict[foundIndex][synIndex]); j++)
+            {
+                temp[tempCounter++] = synDict[foundIndex][synIndex][j];
+            }
+
+            if (currentWord[wordLen - 1] == '.') // If the original word contains a fullstop, add a fullstop to the synonym
+            {
+                temp[tempCounter++] = '.';
+            }
+
+            temp[tempCounter++] = ' ';
         }
 
-        i += (strlen(currentWord) + 1); // +1 for space
+        i += (wordLen + 1); // +1 for space
     }
 
     temp[tempCounter] = '\0';
@@ -301,7 +332,7 @@ char *readInput(const char *const &filename)
 {
     int tempCounter = 0;
     char temp[MAX_SENTENCE_SIZE];
-    fstream file("in.txt", ios::in);
+    fstream file(filename, ios::in);
     string l;
 
     if (!file.is_open())
@@ -323,11 +354,26 @@ char *readInput(const char *const &filename)
 
 void writeOutput(const char *const &filename, const char *const &output)
 {
-    fstream file("out.txt", ios::out);
+    fstream file(filename, ios::out);
     if (!file.is_open())
         return;
 
     file << output;
 
     file.close();
+}
+
+bool stringCmp(const char *const &a, const char *const &b, const int &rangeStart, const int &rangeEnd) // this function assumes [rangeStart..., rangeEnd] is valid allocated memory
+{
+    bool equal = true;
+    for (int i = rangeStart; i <= rangeEnd; i++)
+    {
+        if (a[i] != b[i])
+        {
+            equal = false;
+            break;
+        }
+    }
+
+    return equal;
 }

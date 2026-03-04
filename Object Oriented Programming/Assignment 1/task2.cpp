@@ -6,11 +6,11 @@ const int N = 100;
 const int DICT_MAX_SIZE = 100;
 const int MAX_WORD_SIZE = 100;
 
-char *extractWord(const char str[], int index)
+char *extractHashtag(const char str[], int index)
 {
     int tempWordCounter = 0;
     char tempWord[MAX_WORD_SIZE];
-    for (int i = index; (str[i] != ' ' && str[i] != '\0'); i++)
+    for (int i = index; (str[i] != ' ' && str[i] != '\0' && str[i] != '#'); i++)
     {
         tempWord[tempWordCounter++] = str[i];
     }
@@ -52,13 +52,17 @@ char **extractHashtags(const char tweets[][N], const int &M)
         {
             if (tweets[i][j] == '#')
             {
-                char *currHashtag = extractWord(tweets[i], j + 1);
+                char *currHashtag = extractHashtag(tweets[i], j + 1);
+                int currentHashtagSize = strlen(currHashtag);
+                if (currentHashtagSize <= 0)
+                {
+                    continue;
+                }
 
                 bool dupe = checkDupeInDict(tempDict, hashtagCounter, currHashtag);
 
                 if (!dupe)
                 {
-                    int currentHashtagSize = strlen(currHashtag);
                     tempDict[hashtagCounter] = new char[currentHashtagSize + 1];
                     strcpy(tempDict[hashtagCounter++], currHashtag);
                 }
