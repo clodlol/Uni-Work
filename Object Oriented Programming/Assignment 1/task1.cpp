@@ -79,6 +79,12 @@ char **compileDict(const char *const &input)
     {
         char *currentWord = extractWord(input, i);
         int wordLen = strlen(currentWord);
+        if (wordLen <= 0) // double space edge case
+        {
+            i++;
+            continue;
+        }
+
         bool dupe = checkDupeInDict(temp, wordCount, currentWord);
 
         if (currentWord[wordLen - 1] == '.') // If the word contains a fullstop, remove it
@@ -229,7 +235,7 @@ char **dictIntersection(const char *const *const &dictA, const char *const *cons
     return inter;
 }
 
-char *replaceSyn(const char *const &data, const char *const *const &inputDict, const char *const *const *const &synDict)
+char *replaceSyn(const char *const &data, const char *const *const &inputDict, const char *const *const *const &synDict) // this removes consecutive spaces if they exist
 {
     int tempCounter = 0;
     char *temp = new char[MAX_SENTENCE_SIZE];
@@ -240,6 +246,11 @@ char *replaceSyn(const char *const &data, const char *const *const &inputDict, c
     {
         char *currentWord = extractWord(data, i);
         int foundIndex = -1, wordLen = strlen(currentWord), dictSize = getDictSize(inputDict);
+        if (wordLen <= 0)
+        {
+            i++;
+            continue;
+        }
         for (int j = 0; j < dictSize; j++)
         {
             // exclude fullstop if it exists in currentWord while comparing
