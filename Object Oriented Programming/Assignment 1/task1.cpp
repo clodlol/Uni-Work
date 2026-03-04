@@ -29,7 +29,7 @@ int main()
     char ***synDict = compileSynDict(dict);
     char *data = readInput("data.txt");
     writeOutput("out.txt", replaceSyn(data, synDict));
-
+    cout << "Ouput generated!" << "\n";
     return 0;
 }
 
@@ -258,14 +258,21 @@ char *replaceSyn(const char *const &input, const char *const *const *const &synD
             else
             {
                 int synIndex = -1, synCount = getSynCount(synDict, foundIndex);
-                cout << "Synonyms found for " << currentWord << ": ";
-                for (int j = 0; j < synCount; j++)
-                    cout << (j) << ". " << synDict[foundIndex][j] << " ";
-                cout << "\n"
-                     << "Choose your option: ";
-                while (synIndex < 0 || synIndex >= synCount)
+                if (synCount > 1)
                 {
-                    cin >> synIndex;
+                    cout << "Synonyms found for " << currentWord << ": ";
+                    for (int j = 0; j < synCount; j++)
+                        cout << (j) << ". " << synDict[foundIndex][j] << " ";
+                    cout << "\n"
+                         << "Choose your option: ";
+                    while (synIndex < 0 || synIndex >= synCount)
+                    {
+                        cin >> synIndex;
+                    }
+                }
+                else
+                {
+                    synIndex = 0;
                 }
                 for (int j = 0; j < strlen(synDict[foundIndex][synIndex]); j++)
                 {
