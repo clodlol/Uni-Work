@@ -5,8 +5,8 @@
 using namespace std;
 
 const int MAX_DICT_SIZE = 100;
-const int MAX_SYN_SIZE = 100;
 const int MAX_SENTENCE_SIZE = 1000;
+const int MAX_SYN_SIZE = 100;
 const int MAX_WORD_SIZE = 100;
 
 bool checkDupeInDict(const char *const *const &dict, const int &checkingRange, const char *const &targetWord);
