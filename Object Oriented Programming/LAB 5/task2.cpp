@@ -1,4 +1,5 @@
 #include <iostream>
+#include <conio.h>
 using namespace std;
 
 class Task
@@ -29,3 +30,29 @@ public:
         setIsComplete(false);
     }
 };
+
+int main()
+{
+    Task task;
+    while (true)
+    {
+        char choice;
+        cout << "Press y to complete a task, n to make the task incomplete, or any other key to quit: ";
+        choice = getch();
+        if (choice == 'y')
+        {
+            task.complete();
+            cout << "Task status: " << task.getIsComplete() << "\n";
+        }
+        else if (choice == 'n')
+        {
+            task.incomplete();
+            cout << "Task status: " << task.getIsComplete() << "\n";
+        }
+        else
+        {
+            break;
+        }
+    }
+    return 0;
+}
