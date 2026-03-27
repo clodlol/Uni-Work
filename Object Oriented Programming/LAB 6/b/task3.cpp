@@ -13,7 +13,8 @@ public:
 
 int main()
 {
-    Circle c1{7.86};
-    cout << c1.getArea() << "\n";
+    float radius{7.86};
+    Circle c1{radius};
+    cout << "Area of a circle with radius " << radius << ": " << c1.getArea() << "\n";
     return 0;
 }

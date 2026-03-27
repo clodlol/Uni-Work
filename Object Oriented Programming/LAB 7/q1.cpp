@@ -4,8 +4,8 @@ using namespace std;
 
 class Operation
 {
-    int m_a;
-    int m_b;
+    int m_a{};
+    int m_b{};
 
 public:
     Operation(){}

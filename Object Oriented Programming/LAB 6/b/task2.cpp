@@ -3,28 +3,24 @@ using namespace std;
 
 class Employee
 {
-    string name;
-    static int count;
+    string m_name{};
+    static int m_count;
 
 public:
-    Employee(const string &s)
+    Employee(const string &name): m_name{name}
     {
-        name = s;
-        count++;
+        m_count++;
     }
 
-    static int getCount()
-    {
-        return count;
-    }
+    static int getCount() { return m_count; }
 };
 
-int Employee::count = 0;
+int Employee::m_count = 0;
 
 int main()
 {
-    Employee e1("alex"), e2("bob"), e3("charlie");
-    cout << Employee::getCount() << "\n";
+    Employee e1{"alex"}, e2{"bob"}, e3{"charlie"};
+    cout << "Number of objects created: " << Employee::getCount() << "\n";
 
     return 0;
 }

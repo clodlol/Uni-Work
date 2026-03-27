@@ -25,7 +25,8 @@ public:
 
 int main()
 {
-    Student s1{5};
+    int subjects{5};
+    Student s1{subjects};
     s1.inputMarks();
     s1.printMarks();
 
