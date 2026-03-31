@@ -21,12 +21,12 @@ public:
     {
         return Quadratic(m_a + obj.m_a, m_b + obj.m_b, m_c + obj.m_c);
     }
-    //friend Quadratic operator+(const Quadratic &obj1, const Quadratic& obj2);
+    // friend Quadratic operator+(const Quadratic &obj1, const Quadratic& obj2);
     Quadratic operator-(const Quadratic &obj)
     {
         return Quadratic(m_a - obj.m_a, m_b - obj.m_b, m_c - obj.m_c);
     }
-    //friend Quadratic operator-(const Quadratic &obj1, const Quadratic& obj2);
+    // friend Quadratic operator-(const Quadratic &obj1, const Quadratic& obj2);
     Quadratic operator*(const int &k)
     {
         return Quadratic(m_a * k, m_b * k, m_c * k);
@@ -77,7 +77,9 @@ int main()
     Quadratic q1(2, 3, 4), q2, q3(6, 7, 8);
     q2 = q1 = q3;
 
-    cout << q3 << "\n" << q2 << "\n" << q1;
+    cout << q3 << "\n"
+         << q2 << "\n"
+         << q1;
 
     return 0;
 }

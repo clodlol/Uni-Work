@@ -1,9 +1,9 @@
 #include <iostream>
 using namespace std;
 
-int getMagnitude(const int& real, const int& im)
+int getMagnitude(const int &real, const int &im)
 {
-    return sqrt(real*real + im*im);
+    return sqrt(real * real + im * im);
 }
 
 class ComplexNumber
@@ -27,45 +27,45 @@ public:
         cout << m_real << " + " << m_imaginary << "i";
     }
 
-    bool isEqual(const ComplexNumber& z)
+    bool isEqual(const ComplexNumber &z)
     {
         return (m_real == z.m_real && m_imaginary == z.m_imaginary);
     }
-    bool operator !=(const ComplexNumber& z)
+    bool operator!=(const ComplexNumber &z)
     {
         return (m_real != z.m_real || m_imaginary != z.m_imaginary);
     }
-    bool operator >=(const ComplexNumber& z)
+    bool operator>=(const ComplexNumber &z)
     {
         return (getMagnitude(m_real, m_imaginary) >= getMagnitude(z.m_real, z.m_imaginary));
     }
-    bool operator <=(const ComplexNumber& z)
+    bool operator<=(const ComplexNumber &z)
     {
         return (getMagnitude(m_real, m_imaginary) <= getMagnitude(z.m_real, z.m_imaginary));
     }
 
     ComplexNumber conjugate()
     {
-        return ComplexNumber(m_real, -m_imaginary);
+        return ComplexNumber{m_real, -m_imaginary};
     }
-    ComplexNumber operator+(const ComplexNumber& z)
+    ComplexNumber operator+(const ComplexNumber &z)
     {
-        return ComplexNumber(m_real+z.m_real, m_imaginary+z.m_imaginary);
+        return ComplexNumber{m_real + z.m_real, m_imaginary + z.m_imaginary};
     }
-    ComplexNumber operator-(const ComplexNumber& z)
+    ComplexNumber operator-(const ComplexNumber &z)
     {
-        return ComplexNumber(m_real-z.m_real, m_imaginary-z.m_imaginary);
+        return ComplexNumber{m_real - z.m_real, m_imaginary - z.m_imaginary};
     }
-    ComplexNumber operator*(const ComplexNumber& z)
+    ComplexNumber operator*(const ComplexNumber &z)
     {
-        return ComplexNumber(m_real*z.m_imaginary - m_imaginary*z.m_real, m_real*z.m_imaginary + m_imaginary*z.m_real);
+        return ComplexNumber{m_real * z.m_imaginary - m_imaginary * z.m_real, m_real * z.m_imaginary + m_imaginary * z.m_real};
     }
-    ComplexNumber& operator++()
+    ComplexNumber &operator++()
     {
         m_real++;
         return *this;
     }
-    ComplexNumber& operator--()
+    ComplexNumber &operator--()
     {
         m_real--;
         return *this;
@@ -89,6 +89,7 @@ int ComplexNumber::countDisplay = 0;
 
 int main()
 {
-
+    ComplexNumber z1{1, 1}, z2{0, 0};
+    z1.conjugate().output();
     return 0;
 }
