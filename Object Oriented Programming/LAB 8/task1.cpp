@@ -109,7 +109,7 @@ class Event
     Date eventDate{};
 
 public:
-    Event(int hrs = 0, int mins = 0, int mon = 1, int day = 1, int yr = 1900, const string &name = "christmas")
+    Event(int hrs = 0, int mins = 0, int mon = 1, int day = 1, int yr = 1900, const string &name = "unnamed")
         : eventName{name}, eventTime{Time{hrs, mins}}, eventDate{Date{mon, day, yr}} {}
 
     void setEventData(int hrs, int mins, int mon, int day, int yr, const string &name)
