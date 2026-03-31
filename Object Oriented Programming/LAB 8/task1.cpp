@@ -1,11 +1,22 @@
 #include <iostream>
 using namespace std;
 
-char *formattedInput(int input, int inputLen)
+char *paddedInput(int input, int inputLen)
 {
+    if (inputLen <= 0)
+        return nullptr;
+    input = input < 0 ? -input : input;
+
     char *fInput = new char[inputLen + 1];
     int fInputCounter = 0;
-    for (int i = input; i != 0; i /= 10)
+
+    if (input == 0)
+    {
+        fInput[inputLen - fInputCounter - 1] = ('0');
+        fInputCounter++;
+    }
+
+    for (int i = input; i != 0 && fInputCounter < inputLen; i /= 10)
     {
         fInput[inputLen - fInputCounter - 1] = ('0' + (i % 10));
         fInputCounter++;
@@ -43,8 +54,8 @@ public:
     }
     void printTime()
     {
-        char *fHrs = formattedInput(m_hrs, 2);
-        char *fMins = formattedInput(m_mins, 2);
+        char *fHrs = paddedInput(m_hrs, 2);
+        char *fMins = paddedInput(m_mins, 2);
 
         cout << fHrs << ":" << fMins;
 
@@ -79,9 +90,9 @@ public:
     }
     void printDate()
     {
-        char *fMon = formattedInput(m_mon, 2);
-        char *fDay = formattedInput(m_day, 2);
-        char *fYr = formattedInput(m_yr, 4);
+        char *fMon = paddedInput(m_mon, 2);
+        char *fDay = paddedInput(m_day, 2);
+        char *fYr = paddedInput(m_yr, 4);
 
         cout << fMon << "/" << fDay << "/" << fYr;
 
@@ -119,8 +130,7 @@ public:
 
 int main()
 {
-    Event ev1{6, 0, 12, 25, 2010, "Christmas"};
-    // ev.setEventData(6, 0, 12, 25, 2010, "Christmas");
+    Event ev1{16, 0, 12, 11125, 123140, "Christmas"};
     ev1.printEventData();
 
     Event ev2{};
