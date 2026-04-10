@@ -107,21 +107,21 @@ char *intToRoman(int numInt)
 string romanize(int n)
 {
     string roman;
-    int romanArr[] = {1, 5, 10, 50, 100, 500, 1000};
-    int romanArrLen = sizeof(romanArr) / sizeof(int);
     int currNum = n;
 
-    for (int j = romanArrLen - 1; j >= 0;)
+    int romanArr[] = {1, 5};
+    int sizeRomanArr = sizeof(romanArr) / sizeof(int);
+
+    for (int i = currNum; i > 0;)
     {
-        if (currNum % romanArr[j] < currNum)
+        int currDiv = sizeRomanArr - 1;
+        while ((romanArr[currDiv] % i + i) != romanArr[currDiv])
         {
-            roman += parse(romanArr[j]);
-            currNum -= romanArr[j];
+            currDiv--;
         }
-        else
-        {
-            --j;
-        }
+        char currDigit = parse(romanArr[currDiv]);
+        roman.insert(0, 1, currDigit);
+        i = romanArr[currDiv] % i;
     }
 
     return roman;
@@ -161,7 +161,7 @@ public:
 
 int main()
 {
-    cout << romanize(3999);
+    cout << romanize(19);
 
     return 0;
 }
