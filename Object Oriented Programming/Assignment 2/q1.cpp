@@ -152,5 +152,6 @@ VectorType operator*(double k, const VectorType &vec)
 int main()
 {
     cout << "Enter driver program...\n";
+    system("pause");
     return 0;
 }
