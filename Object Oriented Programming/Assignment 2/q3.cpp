@@ -87,10 +87,10 @@ string intToRoman(int n)
     {
         if (currNum % romanArr[romanArrCounter - (startsWith4 || startsWith9)] < currNum)
         {
-            int firstParsedVal = (startsWith4 || startsWith9) * romanArr[romanArrCounter - (startsWith4 + (2 * startsWith9))];
-            int secondParsedVal = romanArr[romanArrCounter];
+            int firstVal = (startsWith4 || startsWith9) * romanArr[romanArrCounter - (startsWith4 + (2 * startsWith9))];
+            int secondVal = romanArr[romanArrCounter];
 
-            return (roman + parse(firstParsedVal) + parse(secondParsedVal) + intToRoman(currNum - (secondParsedVal - firstParsedVal)));
+            return (roman + parse(firstVal) + parse(secondVal) + intToRoman(currNum - (secondVal - firstVal)));
         }
         else
         {
@@ -102,38 +102,106 @@ string intToRoman(int n)
 class RomanNumber
 {
 private:
+    string m_num;
     int m_numInt{};
-    int m_numLen{};
-    char *m_num{};
 
 public:
-    RomanNumber(char *num)
+    RomanNumber(const string &num) : m_num{num}, m_numInt{romanToInt(m_num)} {}
+
+    RomanNumber(int numInt) : m_num{intToRoman(numInt)}, m_numInt{(numInt <= 0 || numInt > 3999) ? 0 : numInt} {} // stupid cplusplus
+
+    const string &getRoman() const { return m_num; }
+
+    RomanNumber operator+(const RomanNumber &obj) const { return RomanNumber{m_numInt + obj.m_numInt}; }
+    RomanNumber operator+(int numInt) const { return RomanNumber{m_numInt + numInt}; }
+    friend RomanNumber operator+(int numInt, const RomanNumber &obj) { return RomanNumber{numInt + obj.m_numInt}; }
+
+    RomanNumber operator-(const RomanNumber &obj) const { return RomanNumber{m_numInt - obj.m_numInt}; }
+    RomanNumber operator-(int numInt) const { return RomanNumber{m_numInt - numInt}; }
+    friend RomanNumber operator-(int numInt, const RomanNumber &obj) { return RomanNumber{numInt - obj.m_numInt}; }
+
+    RomanNumber operator*(const RomanNumber &obj) const { return RomanNumber{m_numInt * obj.m_numInt}; }
+    RomanNumber operator*(int numInt) const { return RomanNumber{m_numInt * numInt}; }
+    friend RomanNumber operator*(int numInt, const RomanNumber &obj) { return RomanNumber{numInt * obj.m_numInt}; }
+
+    RomanNumber operator/(const RomanNumber &obj) const
     {
-        m_numLen = calculateLen(num);
-        m_num = new char[m_numLen + 1];
-        copyString(m_num, m_numLen + 1, num);
-        m_numInt = romanToInt(m_num);
+        if (obj.m_numInt == 0)
+        {
+            cout << "Roman division by zero.\n";
+            return RomanNumber{0};
+        }
+
+        return RomanNumber{m_numInt / obj.m_numInt};
+    }
+    RomanNumber operator/(int numInt) const
+    {
+        if (numInt == 0)
+        {
+            cout << "Roman division by zero.\n";
+            return RomanNumber{0};
+        }
+
+        return RomanNumber{m_numInt / numInt};
+    }
+    friend RomanNumber operator/(int numInt, const RomanNumber &obj)
+    {
+        if (obj.m_numInt == 0)
+        {
+            cout << "Roman division by zero.\n";
+            return RomanNumber{0};
+        }
+
+        return RomanNumber{numInt / obj.m_numInt};
     }
 
-    // RomanNumber(int numInt) : m_numInt{numInt}
-    // {
-    //     m_num = intToRoman(numInt);
-    //     m_numLen = calculateLen(m_num);
-    // }
+    bool operator==(const RomanNumber &obj) const { return m_numInt == obj.m_numInt; }
+    bool operator==(int numInt) const { return m_numInt == numInt; }
+    friend bool operator==(int numInt, const RomanNumber &obj) { return numInt == obj.m_numInt; }
 
-    ~RomanNumber() { delete[] m_num; }
+    bool operator!=(const RomanNumber &obj) const { return !(*this == obj); }
+    bool operator!=(int numInt) const { return !(*this == numInt); }
+    friend bool operator!=(int numInt, const RomanNumber &obj) { return !(numInt == obj); }
 
-    // RomanNumber &operator=(const RomanNumber &obj)
-    // {
-    //     if (obj == *this)
+    bool operator>(const RomanNumber &obj) const { return m_numInt > obj.m_numInt; }
+    bool operator>(int numInt) const { return m_numInt > numInt; }
+    friend bool operator>(int numInt, const RomanNumber &obj) { return numInt > obj.m_numInt; }
 
-    //         delete[] m_num;
-    // }
+    bool operator<(const RomanNumber &obj) const { return m_numInt < obj.m_numInt; }
+    bool operator<(int numInt) const { return m_numInt < numInt; }
+    friend bool operator<(int numInt, const RomanNumber &obj) { return numInt < obj.m_numInt; }
+
+    RomanNumber &operator++()
+    {
+        m_numInt++;
+        m_num = intToRoman(m_numInt);
+        return *this;
+    }
+    RomanNumber operator++(int)
+    {
+        RomanNumber temp = *this;
+        m_numInt++;
+        m_num = intToRoman(m_numInt);
+        return temp;
+    }
+
+    RomanNumber &operator--()
+    {
+        m_numInt--;
+        m_num = intToRoman(m_numInt);
+        return *this;
+    }
+    RomanNumber operator--(int)
+    {
+        RomanNumber temp = *this;
+        m_numInt--;
+        m_num = intToRoman(m_numInt);
+        return temp;
+    }
 };
 
 int main()
 {
-    cout << intToRoman(3999);
-
+    cout << "Enter driver program...\n";
     return 0;
 }

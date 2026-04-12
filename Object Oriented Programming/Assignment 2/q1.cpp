@@ -151,8 +151,6 @@ VectorType operator*(double k, const VectorType &vec)
 
 int main()
 {
-    VectorType v1{5.2, 6.1, 7.0};
-    VectorType v2{5.22, 6.1, 7.0};
-    cout << (v1 == v2);
+    cout << "Enter driver program...\n";
     return 0;
 }

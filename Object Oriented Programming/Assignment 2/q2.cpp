@@ -36,7 +36,7 @@ public:
         for (int i = 0; i < m_len; ++i)
         {
             if (m_str[i] >= 'a' && m_str[i] <= 'z')
-                m_str[i] += ('a' - 'A');
+                m_str[i] -= ('a' - 'A');
         }
 
         return *this;
@@ -47,7 +47,7 @@ public:
         for (int i = 0; i < m_len; ++i)
         {
             if (m_str[i] >= 'A' && m_str[i] <= 'Z')
-                m_str[i] -= ('a' - 'A');
+                m_str[i] += ('a' - 'A');
         }
 
         return *this;
@@ -286,8 +286,7 @@ istream &operator>>(istream &in, String &obj)
 
 int main()
 {
-    cout << String{"abdcba"}.substring(1, 3);
-
+    cout << "Enter driver program...\n";
     return 0;
 }
 
