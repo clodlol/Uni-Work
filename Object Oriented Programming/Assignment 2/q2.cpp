@@ -1,15 +1,12 @@
 #include <iostream>
+#include "string_utils.h"
+#include "math_utils.h"
 using namespace std;
 
 const int MAX_INPUT_SIZE = 100;
 
-int calculateLen(char *arr);
-void copyString(char *destination, int destAllocSize, char *source);
-int countDigits(int x);
-char *intToCString(int x); // caller must delete[]
-double posFractionalPart(double n);
+char *intToCString(int x);                      // caller must delete[]
 char *doubleToCString(double x, int precision); // caller must delete[], known limitation: truncates if all of the fractional part is 0
-bool equals(double a, double b, double epsilon = 1e-9);
 
 class String
 {
@@ -294,44 +291,6 @@ int main()
     return 0;
 }
 
-int calculateLen(char *arr)
-{
-    int c = 0;
-    while (arr[c] != '\0')
-        c++;
-
-    return c;
-}
-
-void copyString(char *destination, int destAllocSize, char *source)
-// we have to know the amount of allocated memory here, else the program throws
-{
-    if (destAllocSize <= 0)
-    {
-        cout << "Not enough allocated memory to copy string. \n";
-        return;
-    }
-
-    int sourceLen = calculateLen(source);
-    destination[destAllocSize - 1] = '\0';
-    for (int i = 0; i < destAllocSize - 1; ++i)
-        destination[i] = source[i];
-}
-
-int countDigits(int x)
-{
-    if (x < 0)
-        x = -x;
-
-    int c = 0;
-    for (int i = x; i != 0; i /= 10)
-    {
-        c++;
-    }
-
-    return c;
-}
-
 char *intToCString(int x) // caller must delete[]
 {
     bool neg = x < 0;
@@ -352,13 +311,6 @@ char *intToCString(int x) // caller must delete[]
     temp[size] = '\0';
 
     return temp;
-}
-
-double posFractionalPart(double n)
-{
-    if (n < 0)
-        n = -n;
-    return (n - (int)n);
 }
 
 char *doubleToCString(double x, int precision) // caller must delete[], known limitation: truncates if all of the fractional part is 0
@@ -404,9 +356,4 @@ char *doubleToCString(double x, int precision) // caller must delete[], known li
 
     delete[] integralPart;
     return res;
-}
-
-bool equals(double a, double b, double epsilon)
-{
-    return abs(a - b) < epsilon;
 }

@@ -1,12 +1,7 @@
 #include <iostream>
 #include <limits>
+#include "math_utils.h"
 using namespace std;
-
-const float PI = 3.14159265359;
-
-bool equals(double a, double b, double epsilon = 1e-9);
-double arccos(double x);
-double square_root(double x);
 
 class VectorType
 {
@@ -157,69 +152,7 @@ VectorType operator*(double k, const VectorType &vec)
 int main()
 {
     VectorType v1{5.2, 6.1, 7.0};
-    VectorType v2{5.2, 6.1, 7.0};
+    VectorType v2{5.22, 6.1, 7.0};
     cout << (v1 == v2);
     return 0;
-}
-
-bool equals(double a, double b, double epsilon)
-{
-    return abs(a - b) < epsilon;
-}
-
-double square_root(double x)
-{
-    if (x < 0)
-    {
-        return NAN;
-    }
-
-    if (x == 0)
-        return 0;
-
-    double estimate = x / 2;
-    for (int i = 0; i < 10; ++i)
-    {
-        estimate = 0.5 * (estimate + (x / estimate));
-    }
-
-    return estimate;
-}
-
-double arccos(double x)
-{
-    if (x > 1 || x < -1)
-    {
-        cout << "Invalid input to arccos function.\n";
-        return 0.00;
-    }
-
-    // if x is close to 1, return sqrt(-2*(x-1))
-    // if x is close to -1, return -sqrt(2*(x+1))+PI
-    // if x is close to 0, return PI/2 - x
-    // if x is close to 0.5, return PI/3-((x-0.5)/pow(0.75, 1/2))
-    // if x is close to -0.5 return 4*PI/3-((x+0.5)/pow(0.75, 1/2))
-
-    double taylor_denom = square_root(0.75);
-
-    if (x > 0)
-    {
-        if (abs(x - 0) < abs(x - 0.5))
-            return PI / 2 - x;
-        else if (abs(x - 0.5) < abs(x - 1))
-            return PI / 3 - ((x - 0.5) / taylor_denom);
-        else
-            return square_root(-2 * (x - 1));
-    }
-    else if (x < 0)
-    {
-        if (abs(x - 0) < abs(x + 0.5))
-            return PI / 2 - x;
-        else if (abs(x + 0.5) < abs(x + 1))
-            return 2 * PI / 3 - ((x + 0.5) / taylor_denom);
-        else
-            return -square_root(2 * (x + 1)) + PI;
-    }
-
-    return PI / 2;
 }

@@ -1,29 +1,7 @@
 #include <iostream>
+#include "string_utils.h"
+#include "math_utils.h"
 using namespace std;
-
-int calculateLen(char *arr)
-{
-    int c = 0;
-    while (arr[c] != '\0')
-        c++;
-
-    return c;
-}
-
-void copyString(char *destination, int destAllocSize, char *source)
-// we have to know the amount of allocated memory here, else the program throws
-{
-    if (destAllocSize <= 0)
-    {
-        cout << "Not enough allocated memory to copy string. \n"; // return an error here?
-        return;
-    }
-
-    int sourceLen = calculateLen(source);
-    destination[destAllocSize - 1] = '\0';
-    for (int i = 0; i < destAllocSize - 1; ++i)
-        destination[i] = source[i];
-}
 
 int deparse(char a)
 {
@@ -71,9 +49,9 @@ char parse(int x)
     }
 }
 
-int romanToInt(char *num)
+int romanToInt(const string &num)
 {
-    int len = calculateLen(num);
+    int len = num.size();
     int conversion = deparse(num[len - 1]);
     for (int i = len - 2; i >= 0; --i)
     {
@@ -90,41 +68,35 @@ int romanToInt(char *num)
     return conversion;
 }
 
-char *intToRoman(int numInt)
+string intToRoman(int n)
 {
-    for (int i = numInt, mult = 1; i != 0; i /= 10, mult *= 10)
-    {
-        int currDigit = i % 10;
-        if (currDigit == 0)
-            continue;
+    if (n <= 0 || n > 3999)
+        return "";
 
-        // find roman of currDigit*mult
-    }
-
-    return nullptr;
-}
-
-string romanize(int n)
-{
     string roman;
     int currNum = n;
 
-    int romanArr[] = {1, 5};
+    int romanArr[] = {1, 5, 10, 50, 100, 500, 1000};
     int sizeRomanArr = sizeof(romanArr) / sizeof(int);
 
-    for (int i = currNum; i > 0;)
-    {
-        int currDiv = sizeRomanArr - 1;
-        while ((romanArr[currDiv] % i + i) != romanArr[currDiv])
-        {
-            currDiv--;
-        }
-        char currDigit = parse(romanArr[currDiv]);
-        roman.insert(0, 1, currDigit);
-        i = romanArr[currDiv] % i;
-    }
+    bool startsWith4 = startsWithK(currNum, 4);
+    bool startsWith9 = startsWithK(currNum, 9);
 
-    return roman;
+    int romanArrCounter = sizeRomanArr - 1;
+    while (true)
+    {
+        if (currNum % romanArr[romanArrCounter - (startsWith4 || startsWith9)] < currNum)
+        {
+            int firstParsedVal = (startsWith4 || startsWith9) * romanArr[romanArrCounter - (startsWith4 + (2 * startsWith9))];
+            int secondParsedVal = romanArr[romanArrCounter];
+
+            return (roman + parse(firstParsedVal) + parse(secondParsedVal) + intToRoman(currNum - (secondParsedVal - firstParsedVal)));
+        }
+        else
+        {
+            romanArrCounter--;
+        }
+    }
 }
 
 class RomanNumber
@@ -161,7 +133,7 @@ public:
 
 int main()
 {
-    cout << romanize(19);
+    cout << intToRoman(3999);
 
     return 0;
 }
