@@ -102,15 +102,43 @@ string intToRoman(int n)
 class RomanNumber
 {
 private:
-    string m_num;
+    string m_num{};
     int m_numInt{};
 
 public:
-    RomanNumber(const string &num) : m_num{num}, m_numInt{romanToInt(m_num)} {}
+    RomanNumber(const string &num)
+    {
+        if (romanToInt(num) == 0)
+        {
+            cout << "Invalid roman number.\n";
+            return;
+        }
 
-    RomanNumber(int numInt) : m_num{intToRoman(numInt)}, m_numInt{(numInt <= 0 || numInt > 3999) ? 0 : numInt} {} // stupid cplusplus
+        int inputInt = romanToInt(num);
+        if (num != intToRoman(inputInt)) // There are no alternatives to any roman number
+        {
+            cout << "Invalid roman number.\n";
+            return;
+        }
+
+        m_num = num;
+        m_numInt = inputInt;
+    }
+
+    RomanNumber(int numInt)
+    {
+        if (numInt <= 0 || numInt > 3999)
+        {
+            cout << "Invalid roman number.\n";
+            return;
+        }
+
+        m_numInt = numInt;
+        m_num = intToRoman(m_numInt);
+    }
 
     const string &getRoman() const { return m_num; }
+    int getInt() const { return m_numInt; }
 
     RomanNumber operator+(const RomanNumber &obj) const { return RomanNumber{m_numInt + obj.m_numInt}; }
     RomanNumber operator+(int numInt) const { return RomanNumber{m_numInt + numInt}; }
@@ -202,7 +230,9 @@ public:
 
 int main()
 {
-    cout << "Enter driver program...\n";
+    RomanNumber n1{"IXIX"};
+    cout << n1.getInt();
+
     system("pause");
     return 0;
 }
