@@ -286,7 +286,11 @@ istream &operator>>(istream &in, String &obj)
 
 int main()
 {
-    cout << "Enter driver program...\n";
+    String s1{"12"};
+    String s2 = s1;
+    String s3 = s2 + 3.99;
+    cout << s3 << "\n";
+
     system("pause");
     return 0;
 }
