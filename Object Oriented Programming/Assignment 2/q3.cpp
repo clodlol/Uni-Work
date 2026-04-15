@@ -49,6 +49,17 @@ char parse(int x)
     }
 }
 
+bool validRoman(const string &num)
+{
+    for (char c : num)
+    {
+        if (c != 'I' || c != 'V' || c != 'X' || c != 'L' || c != 'C' || c != 'D' || c != 'M')
+            return false;
+    }
+
+    return true;
+}
+
 int romanToInt(const string &num)
 {
     int len = num.size();
@@ -108,7 +119,7 @@ private:
 public:
     RomanNumber(const string &num)
     {
-        if (romanToInt(num) == 0)
+        if (!validRoman(num))
         {
             cout << "Invalid roman number.\n";
             return;
@@ -230,7 +241,7 @@ public:
 
 int main()
 {
-    RomanNumber n1{"IXIX"};
+    RomanNumber n1{" - s"};
     cout << n1.getInt();
 
     system("pause");
