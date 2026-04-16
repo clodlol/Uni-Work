@@ -272,22 +272,21 @@ ostream &operator<<(ostream &out, const String &obj)
 
 istream &operator>>(istream &in, String &obj)
 {
-    string s;
+    char s[1000];
 
     while (true)
     {
-        in >> s;
+        in.getline(s, 1000);
         if (!in)
         {
             in.clear();
             in.ignore(numeric_limits<streamsize>::max(), '\n'); // ignores failing data
             continue;
         }
-        in.ignore(numeric_limits<streamsize>::max(), '\n'); // ignores extraneous data
         break;
     }
 
-    String temp{(char *)s.c_str()};
+    String temp{s};
     obj = temp;
 
     return in;
@@ -295,10 +294,9 @@ istream &operator>>(istream &in, String &obj)
 
 int main()
 {
-    String s1{"12"};
-    String s2 = s1;
-    String s3 = s2 + 3.99;
-    cout << s3 << "\n";
+    String s1{};
+    cin >> s1;
+    cout << "You entered: " << s1 << "\n";
 
     system("pause");
     return 0;
