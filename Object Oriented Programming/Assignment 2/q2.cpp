@@ -17,6 +17,10 @@ private:
 public:
     String(char *str = "")
     {
+        if (!str)
+        {
+            str = "";
+        }
         m_len = calculateLen(str);
         m_str = new char[m_len + 1];
         copyString(m_str, m_len + 1, str);
@@ -218,6 +222,11 @@ public:
 
     String &operator=(const String &obj)
     {
+        if (this == &obj)
+        {
+            return *this;
+        }
+
         if (m_str)
             delete[] m_str;
 

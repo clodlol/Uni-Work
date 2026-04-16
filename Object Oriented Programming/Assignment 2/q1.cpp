@@ -47,6 +47,11 @@ public:
 
     VectorType &operator=(const VectorType &vec)
     {
+        if (this == &vec)
+        {
+            return *this;
+        }
+
         if (m_x)
             delete m_x;
         if (m_y)
