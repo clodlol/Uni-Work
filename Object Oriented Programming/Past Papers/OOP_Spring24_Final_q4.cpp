@@ -13,7 +13,7 @@ private:
 public:
     Address(int type = 1, std::string street = "", std::string city = "", std::string state = "", std::string postcode = "", std::string country = "") : Type{type}, Street{street}, City{city}, State{state}, PostCode{postcode}, Country{country} {}
 
-    void Print()
+    void Print() const
     {
         std::string addressType;
         if (Type == 1)
@@ -38,7 +38,7 @@ private:
 public:
     PhoneNo(int type = 1, std::string number = "") : Type{type}, Number{number} {}
 
-    void Print()
+    void Print() const
     {
         std::string phoneType;
         if (Type == 1)
@@ -78,7 +78,7 @@ public:
             delete[] m_Address;
     }
 
-    void Print()
+    void Print() const
     {
         std::cout << "[Name] " << Name << "\n";
 
@@ -134,41 +134,33 @@ public:
 
     void addContactDetail(PhoneNo *phonePtr)
     {
-        PhoneNo *temp = new PhoneNo[phoneCount];
+        PhoneNo *temp = new PhoneNo[phoneCount + 1];
         if (Phone)
         {
             for (int i = 0; i < phoneCount && temp; ++i)
                 temp[i] = Phone[i];
-
             delete[] Phone;
         }
 
+        temp[phoneCount] = *phonePtr;
         phoneCount++;
 
-        Phone = new PhoneNo[phoneCount];
-        for (int i = 0; i < phoneCount - 1 && temp; ++i)
-            Phone[i] = temp[i];
-
-        Phone[phoneCount - 1] = *phonePtr;
+        Phone = temp;
     }
 
     void addContactDetail(Address *addressPtr)
     {
-        Address *temp = new Address[addressCount];
+        Address *temp = new Address[addressCount + 1];
         if (m_Address)
         {
             for (int i = 0; i < addressCount && temp; ++i)
                 temp[i] = m_Address[i];
             delete[] m_Address;
         }
-
+        temp[addressCount] = *addressPtr;
         addressCount++;
 
-        m_Address = new Address[addressCount];
-        for (int i = 0; i < addressCount - 1 && temp; ++i)
-            m_Address[i] = temp[i];
-
-        m_Address[addressCount - 1] = *addressPtr;
+        m_Address = temp;
     }
 };
 
