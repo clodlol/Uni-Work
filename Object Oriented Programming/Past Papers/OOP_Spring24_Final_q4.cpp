@@ -70,10 +70,10 @@ public:
     ~Contact()
     {
         if (Phone)
-            delete Phone;
+            delete[] Phone;
 
         if (m_Address)
-            delete m_Address;
+            delete[] m_Address;
     }
 
     void Print()
@@ -93,10 +93,10 @@ public:
             return *this;
 
         if (Phone)
-            delete Phone;
+            delete[] Phone;
 
         if (m_Address)
-            delete m_Address;
+            delete[] m_Address;
 
         if (other.m_Address)
         {
@@ -116,7 +116,7 @@ public:
     void addContactDetail(PhoneNo *phonePtr)
     {
         if (Phone)
-            delete Phone;
+            delete[] Phone;
 
         Phone = new PhoneNo(*phonePtr);
     }
@@ -124,7 +124,7 @@ public:
     void addContactDetail(Address *addressPtr)
     {
         if (m_Address)
-            delete m_Address;
+            delete[] m_Address;
 
         m_Address = new Address(*addressPtr);
     }
