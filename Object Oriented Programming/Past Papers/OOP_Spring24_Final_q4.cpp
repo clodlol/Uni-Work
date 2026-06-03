@@ -11,9 +11,9 @@ private:
     std::string Country;
 
 public:
-    Address(int type, std::string street, std::string city, std::string state, std::string postcode, std::string country) : Type{type}, Street{street}, City{city}, State{state}, PostCode{postcode}, Country{country} {}
+    Address(int type = 1, std::string street = "", std::string city = "", std::string state = "", std::string postcode = "", std::string country = "") : Type{type}, Street{street}, City{city}, State{state}, PostCode{postcode}, Country{country} {}
 
-    void Print()
+    void Print() const
     {
         std::string addressType;
         if (Type == 1)
@@ -36,9 +36,9 @@ private:
     std::string Number;
 
 public:
-    PhoneNo(int type, std::string number) : Type{type}, Number{number} {}
+    PhoneNo(int type = 1, std::string number = "") : Type{type}, Number{number} {}
 
-    void Print()
+    void Print() const
     {
         std::string phoneType;
         if (Type == 1)
@@ -59,10 +59,12 @@ class Contact
 private:
     std::string Name;
     PhoneNo *Phone;
+    int phoneCount;
     Address *m_Address;
+    int addressCount;
 
 public:
-    Contact(std::string name = "") : Name{name}, Phone{nullptr}, m_Address{nullptr} {}
+    Contact(std::string name = "") : Name{name}, Phone{nullptr}, m_Address{nullptr}, phoneCount{0}, addressCount{0} {}
     Contact(const Contact &other)
     {
         *this = other;
@@ -76,15 +78,21 @@ public:
             delete[] m_Address;
     }
 
-    void Print()
+    void Print() const
     {
         std::cout << "[Name] " << Name << "\n";
-        if (Phone)
-            Phone->Print();
-        std::cout << "\n";
-        if (m_Address)
-            m_Address->Print();
-        std::cout << "\n";
+
+        for (int i = 0; i < phoneCount && Phone; ++i)
+        {
+            Phone[i].Print();
+            std::cout << "\n";
+        }
+
+        for (int i = 0; i < addressCount && m_Address; ++i)
+        {
+            m_Address[i].Print();
+            std::cout << "\n";
+        }
     }
 
     Contact &operator=(const Contact &other)
@@ -96,16 +104,24 @@ public:
             delete[] Phone;
 
         if (m_Address)
-            delete[] m_Address;
+            delete m_Address;
 
         if (other.m_Address)
         {
-            m_Address = new Address(*other.m_Address);
+            m_Address = new Address[other.addressCount];
+            for (int i = 0; i < addressCount; ++i)
+            {
+                m_Address[i] = other.m_Address[i];
+            }
         }
 
         if (other.Phone)
         {
-            Phone = new PhoneNo(*other.Phone);
+            Phone = new PhoneNo[other.phoneCount];
+            for (int i = 0; i < phoneCount; ++i)
+            {
+                Phone[i] = other.Phone[i];
+            }
         }
 
         Name = other.Name;
@@ -115,18 +131,20 @@ public:
 
     void addContactDetail(PhoneNo *phonePtr)
     {
+        PhoneNo *temp = new PhoneNo[phoneCount + 1];
         if (Phone)
-            delete[] Phone;
+            delete Phone;
 
-        Phone = new PhoneNo(*phonePtr);
+        Phone = temp;
     }
 
     void addContactDetail(Address *addressPtr)
     {
+        Address *temp = new Address[addressCount + 1];
         if (m_Address)
-            delete[] m_Address;
+            delete m_Address;
 
-        m_Address = new Address(*addressPtr);
+        m_Address = temp;
     }
 };
 
