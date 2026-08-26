@@ -104,10 +104,7 @@ public:
             delete[] Phone;
 
         if (m_Address)
-            delete[] m_Address;
-
-        phoneCount = other.phoneCount;
-        addressCount = other.addressCount;
+            delete m_Address;
 
         if (other.m_Address)
         {
@@ -136,14 +133,7 @@ public:
     {
         PhoneNo *temp = new PhoneNo[phoneCount + 1];
         if (Phone)
-        {
-            for (int i = 0; i < phoneCount && temp; ++i)
-                temp[i] = Phone[i];
-            delete[] Phone;
-        }
-
-        temp[phoneCount] = *phonePtr;
-        phoneCount++;
+            delete Phone;
 
         Phone = temp;
     }
@@ -152,13 +142,7 @@ public:
     {
         Address *temp = new Address[addressCount + 1];
         if (m_Address)
-        {
-            for (int i = 0; i < addressCount && temp; ++i)
-                temp[i] = m_Address[i];
-            delete[] m_Address;
-        }
-        temp[addressCount] = *addressPtr;
-        addressCount++;
+            delete m_Address;
 
         m_Address = temp;
     }
