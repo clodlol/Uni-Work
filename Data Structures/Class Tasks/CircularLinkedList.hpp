@@ -1,4 +1,8 @@
+#pragma once
+
 #include <iostream>
+#include "mergeSort.hpp"
+
 using namespace std;
 
 template <typename T>
@@ -113,7 +117,7 @@ public:
         cout << "END\n";
     }
 
-    CircularLinkedList<T> &insert(const T &d)
+    CircularLinkedList<T> &insertOne(const T &d)
     {
         if (!head)
         {
@@ -148,6 +152,74 @@ public:
         Node<T> *temp = new Node<T>(d);
         temp->next = ptr->next;
         ptr->next = temp;
+
+        return *this;
+    }
+
+    CircularLinkedList<T> &insertMany(const T *dArr, int size)
+    {
+        if (size <= 0)
+        {
+            return *this;
+        }
+
+        T *sortedInput = new T[size];
+        int sortedCtr = 0;
+        for (int i = 0; i < size; ++i)
+        {
+            sortedInput[i] = dArr[i];
+        }
+
+        mergeSort(sortedInput, 0, size - 1);
+
+        if (!head)
+        {
+            head = new Node<T>(sortedInput[sortedCtr]);
+            head->next = head;
+            sortedCtr++;
+        }
+
+        Node<T> *lastEl = head;
+        while (lastEl->next != head)
+        {
+            lastEl = lastEl->next;
+        }
+
+        while (sortedCtr < size && head->data >= sortedInput[sortedCtr])
+        {
+            Node<T> *newNode = new Node<T>(sortedInput[sortedCtr]);
+
+            newNode->next = head;
+            head = newNode;
+            lastEl->next = head;
+            sortedCtr++;
+        }
+
+        Node<T> *ptr = head;
+        while (sortedCtr < size && ptr->next != head)
+        {
+            if (ptr->next->data >= sortedInput[sortedCtr])
+            {
+                Node<T> *newNode = new Node<T>(sortedInput[sortedCtr]);
+                newNode->next = ptr->next;
+                ptr->next = newNode;
+                sortedCtr++;
+            }
+
+            ptr = ptr->next;
+        }
+
+        while (sortedCtr < size && ptr->data <= sortedInput[sortedCtr])
+        {
+            Node<T> *newNode = new Node<T>(sortedInput[sortedCtr]);
+            newNode->next = head;
+            ptr->next = newNode;
+            sortedCtr++;
+
+            ptr = ptr->next;
+        }
+
+        delete[] sortedInput;
 
         return *this;
     }
@@ -251,11 +323,20 @@ public:
     }
 };
 
-int main()
-{
-    CircularLinkedList<int> list;
-    list.insert(0).insert(1).insert(0).insert(3).insert(2).display();
-    list.deleteMany(0).display();
+// int main()
+// {
+//     int arr[] = {5, 4, 3, 2, 1};
+//     int size = sizeof(arr) / sizeof(arr[0]);
 
-    return 0;
-}
+//     int low = 0, high = size - 1;
+//     mergeSort<int>(arr, low, high);
+
+//     for (int i = 0; i < size; ++i)
+//     {
+//         cout << arr[i] << " ";
+//     }
+
+//     cout << "\n";
+
+//     return 0;
+// }
