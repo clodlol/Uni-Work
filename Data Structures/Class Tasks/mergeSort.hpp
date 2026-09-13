@@ -67,7 +67,7 @@ void mergeSort(T *arr, int low, int high)
     {
         for (int i = low; i <= high; i += (2 * width))
         {
-            merge(arr, i, min(i + 2 * width - 1, high), i + width - 1);
+            merge(arr, i, min(i + 2 * width - 1, high), min(i + width - 1, high));
         }
     }
 }
