@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 struct Coach
@@ -135,17 +136,17 @@ public:
 
         auto ptr = other.sp;
         clear();
+        CoachNode *tail = nullptr;
         while (ptr != nullptr)
         {
-            if (!sp)
-            {
-                sp = new CoachNode(ptr->data);
-                ptr = ptr->next;
-                continue;
-            }
             auto newNode = new CoachNode(ptr->data);
-            newNode->next = sp;
-            sp = newNode;
+            if (!sp)
+                sp = tail = newNode;
+            else
+            {
+                tail->next = newNode;
+                tail = newNode;
+            }
             ptr = ptr->next;
         }
 
@@ -159,11 +160,19 @@ public:
         *this = other;
     }
 
-    bool push(const Coach &coach)
+    bool push(const Coach &coach, bool verbose = true)
     {
-        if (count == capacity || (sp && sp->data.weightTons < coach.weightTons))
+        if (count == capacity)
         {
-            cout << "ERROR [Invalid Coach]: Siding capacity exceeded or a heavier coach attempted boarding siding.\n";
+            if (verbose)
+                cout << "ERROR [SidingFull]: Siding is full, coach " << coach.coachId << " refused.\n";
+            return false;
+        }
+
+        if (sp && sp->data.weightTons < coach.weightTons)
+        {
+            if (verbose)
+                cout << "ERROR [TooHeavy]: Coach " << coach.coachId << " (" << coach.weightTons << "t) is heavier than siding top " << sp->data.coachId << " (" << sp->data.weightTons << "t).\n";
             return false;
         }
 
@@ -269,51 +278,46 @@ public:
 
     bool shunt()
     {
-        int next = 1;
+        int goArounds = 0;
         while (!entryLine.isEmpty())
         {
-            if (entryLine.peek().slot != next)
+            if (entryLine.peek().slot != platformExpectedSlot)
             {
                 auto front = entryLine.dequeue();
-                bool pushed = siding.push(front);
+                bool pushed = siding.push(front, false);
                 if (!pushed && front.loops == 0)
                 {
                     front.loops = 1;
+                    goArounds++;
                     entryLine.enqueue(front);
                 }
                 else if (!pushed && front.loops == 1)
                 {
                     cout << "ERROR [Yard Jam]: Yard jammed due to coach " << front.coachId << ".\n";
+                    showStatus();
                     return false;
                 }
 
                 continue;
             }
 
-            if (joinPlatform(entryLine.dequeue()))
-                next++;
-            else
+            if (!joinPlatform(entryLine.dequeue()))
                 return false;
 
-            while (!siding.isEmpty() && siding.top().slot == next)
-                if (joinPlatform(siding.pop()))
-                    next++;
-                else
+            while (!siding.isEmpty() && siding.top().slot == platformExpectedSlot)
+                if (!joinPlatform(siding.pop()))
                     return false;
-
-            if (entryLine.isEmpty() && !siding.isEmpty())
-            {
-                cout << "ERROR [Deadlock]: Siding non empty due to top coach " << siding.top().coachId << ".\n";
-                return false;
-            }
         }
 
         if (!siding.isEmpty())
         {
             cout << "ERROR [Deadlock]: Siding non empty due to top coach " << siding.top().coachId << ".\n";
+            showStatus();
             return false;
         }
 
+        cout << "Train formed. Go-arounds: " << goArounds << "\n";
+        showStatus();
         return true;
     }
 
@@ -379,6 +383,126 @@ public:
             temp2.forcePush(siding.pop());
         }
         cout << "\n";
-        siding = temp2;
+        while (!temp2.isEmpty())
+            siding.forcePush(temp2.pop());
+
+        temp = CoachQueue{};
+
+        cout << "Track 2: <- ";
+        while (!Track2.isEmpty())
+        {
+            cout << "(" << Track2.peek().coachId << ", " << Track2.peek().weightTons << "t, " << Track2.peek().slot << ") ";
+            temp.enqueue(Track2.dequeue());
+        }
+        cout << " <- \n";
+        Track2 = temp;
     }
 };
+
+int main()
+{
+    cout << "===== Part A: arrival validation =====\n";
+    {
+        RailwayManager m;
+        m.arriveCoach("A", 30, 2);
+        m.arriveCoach("B", 0, 3);
+        m.arriveCoach("C", 20, 2);
+        m.arriveCoach("A", 10, 5);
+        m.arriveCoach("", 10, 6);
+        m.arriveCoach("D", 10, 0);
+        m.showStatus();
+    }
+
+    cout << "\n===== Part A: siding rules (standalone) =====\n";
+    {
+        CoachStack s{3};
+        s.push(Coach{"A", 30, 1});
+        s.push(Coach{"B", 50, 2});
+        s.push(Coach{"C", 30, 3});
+        s.push(Coach{"D", 20, 4});
+        s.push(Coach{"E", 10, 5});
+        cout << "top: " << s.top().coachId << "\n";
+    }
+
+    cout << "\n===== Part A: platform rule =====\n";
+    {
+        RailwayManager m;
+        m.joinPlatform(Coach{"X", 10, 2});
+        m.joinPlatform(Coach{"X", 10, 1});
+        m.joinPlatform(Coach{"Y", 10, 2});
+        m.showStatus();
+    }
+
+    cout << "\n===== Example 1 (no conflicts) =====\n";
+    {
+        RailwayManager m;
+        m.arriveCoach("A", 50, 3);
+        m.arriveCoach("B", 40, 1);
+        m.arriveCoach("C", 30, 2);
+        m.arriveCoach("D", 20, 5);
+        m.arriveCoach("E", 10, 4);
+        m.shunt();
+    }
+
+    cout << "\n===== Example 2 (one go-around) + Part C =====\n";
+    {
+        RailwayManager m;
+        m.arriveCoach("A", 30, 2);
+        m.arriveCoach("B", 50, 3);
+        m.arriveCoach("C", 40, 1);
+        m.shunt();
+
+        cout << "-- turnAround --\n";
+        m.turnAround();
+        m.showStatus();
+
+        cout << "-- splitAfter(A) --\n";
+        m.splitAfter("A");
+        m.showStatus();
+
+        cout << "-- splitAfter(Z) --\n";
+        m.splitAfter("Z");
+        m.showStatus();
+    }
+
+    cout << "\n===== Example 3 (yard jam) =====\n";
+    {
+        RailwayManager m;
+        m.arriveCoach("A", 30, 3);
+        m.arriveCoach("B", 50, 4);
+        m.arriveCoach("C", 40, 2);
+        m.arriveCoach("D", 10, 1);
+        m.shunt();
+    }
+
+    cout << "\n===== Example 4 (deadlock) =====\n";
+    {
+        RailwayManager m;
+        m.arriveCoach("A", 30, 3);
+        m.arriveCoach("B", 50, 2);
+        m.arriveCoach("C", 20, 4);
+        m.arriveCoach("D", 10, 1);
+        m.shunt();
+    }
+
+    cout << "\n===== Repeat shunt after more arrivals =====\n";
+    {
+        RailwayManager m;
+        m.arriveCoach("A", 10, 1);
+        m.arriveCoach("B", 10, 2);
+        m.shunt();
+        m.arriveCoach("C", 10, 3);
+        m.shunt();
+    }
+
+    cout << "\n===== Empty yard =====\n";
+    {
+        RailwayManager m;
+        m.shunt();
+        m.turnAround();
+        m.splitAfter("A");
+        m.showStatus();
+    }
+
+    return 0;
+}
